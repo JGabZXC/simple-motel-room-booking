@@ -1,0 +1,47 @@
+version: "3.8"
+
+services:
+  # --- New PostgreSQL Service ---
+  db:
+    image: postgres:15-alpine
+    container_name: postgres_db
+    restart: always
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=myproject
+      - POSTGRES_USER=myuser
+      - POSTGRES_PASSWORD=mypassword
+    ports:
+      - "5432:5432" # Optional: Exposes DB to your local machine (e.g. for DBeaver/pgAdmin)
+
+  backend:
+    build: ./backend
+    container_name: drf_backend
+    volumes:
+      - ./backend/app:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      - DEBUG=1
+      # Database connection info for Django
+      - DB_ENGINE=django.db.backends.postgresql
+      - DB_NAME=myproject
+      - DB_USER=myuser
+      - DB_PASSWORD=mypassword
+      - DB_HOST=db # This must match the service name 'db' above
+      - DB_PORT=5432
+
+  frontend:
+    build: ./frontend
+    container_name: react_nginx_frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+# Define the volume for persistence
+volumes:
+  postgres_data:
