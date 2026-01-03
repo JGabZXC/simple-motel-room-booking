@@ -1,7 +1,7 @@
+from datetime import timedelta
+from decimal import Decimal
+
 from django.db import models
-
-from time_extension.models import TimeExtension
-
 
 class Room(models.Model):
     STATUS_CHOICES = [
@@ -11,7 +11,7 @@ class Room(models.Model):
     ]
     code = models.CharField(max_length=100) # R101, R102
     capacity = models.PositiveIntegerField()
-    is_airConditioned = models.BooleanField(default=False)
+    is_air_conditioned = models.BooleanField(default=False)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='open')
     price_per_hour = models.DecimalField(max_digits=10, decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -40,3 +40,28 @@ class RoomBooking(models.Model):
 
     def __str__(self):
         return f"Booking {self.room_code.code} ({self.id}) - {self.status}"
+
+    # HELPER METHODS
+    def calculate_initial_price(self):
+        duration = self.end_time - self.start_time
+        total_hours = Decimal(duration.total_seconds()) / Decimal(3600)
+
+        hourly_rate = self.room_code.price_per_hour
+
+        self.total_price = round(total_hours * hourly_rate, 2)
+        self.save()
+
+    def extend_booking(self, minutes):
+        hours_added = Decimal(minutes) / Decimal(60)
+        extension_cost = round(hours_added * self.room_code.price_per_hour, 2)
+
+        from time_extension.models import TimeExtension
+        TimeExtension.objects.create(
+            room_booking=self,
+            duration=hours_added,
+            additional_cost=extension_cost,
+        )
+
+        self.end_time += timedelta(minutes=minutes)
+        self.total_price += extension_cost
+        self.save()

@@ -1,5 +1,5 @@
 from django.apps import AppConfig
 
 
-class TimeExtensionConfig(AppConfig):
-    name = 'time_extension'
+class CustomerDetailConfig(AppConfig):
+    name = 'customer_detail'

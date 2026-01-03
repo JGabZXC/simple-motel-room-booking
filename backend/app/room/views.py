@@ -6,10 +6,10 @@ from room.serializers import RoomSerializer
 
 # Create your views here.
 class RoomListCreate(ListCreateAPIView):
-    serializer_class = RoomSerializer
     queryset = Room.objects.all()
+    serializer_class = RoomSerializer
 
 class RoomDetailView(RetrieveUpdateAPIView):
-    serializer_class = RoomSerializer
     queryset = Room.objects.all()
+    serializer_class = RoomSerializer
     lookup_field = 'code'
