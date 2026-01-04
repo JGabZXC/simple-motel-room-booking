@@ -11,7 +11,7 @@ const ExtensionForm: React.FC<ExtensionFormProps> = ({
   bookingId,
   onExtensionAdded,
 }) => {
-  const [duration, setDuration] = useState(60);
+  const [duration, setDuration] = useState(1);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -32,7 +32,7 @@ const ExtensionForm: React.FC<ExtensionFormProps> = ({
     <form onSubmit={handleSubmit} className="flex items-end gap-4">
       <div>
         <label className="block text-gray-700 text-sm font-bold mb-2">
-          Duration (minutes)
+          Duration (hours)
         </label>
         <input
           type="number"

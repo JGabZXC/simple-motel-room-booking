@@ -1,0 +1,52 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: postgres_db_dev
+    restart: always
+    volumes:
+      - postgres_data_dev:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=myproject
+      - POSTGRES_USER=myuser
+      - POSTGRES_PASSWORD=mypassword
+
+  backend:
+    build: ./backend
+    container_name: drf_backend_dev
+    restart: always
+    volumes:
+      - ./backend/app:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      - DEBUG=1
+      - DB_ENGINE=django.db.backends.postgresql
+      - DB_NAME=myproject
+      - DB_USER=myuser
+      - DB_PASSWORD=mypassword
+      - DB_HOST=db
+      - DB_PORT=5432
+    command: python manage.py runserver 0.0.0.0:8000
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    container_name: react_frontend_dev
+    restart: always
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "3000:5173"
+    depends_on:
+      - backend
+    environment:
+      - CHOKIDAR_USEPOLLING=true # Essential for hot reload on Windows/Docker
+
+volumes:
+  postgres_data_dev:

@@ -8,16 +8,12 @@ from room.models import RoomBooking
 
 class RoomBookingSerializer(serializers.ModelSerializer):
     customer_details = CustomerDetailSerializer(many=True)
+    original_end_time = serializers.DateTimeField(read_only=True)
 
     class Meta:
         model = RoomBooking
         fields = '__all__'
         read_only_fields = ('total_price', 'status', 'booked_at', 'checked_in_at', 'checked_out_at', 'cancelled_at')
-
-    # def to_representation(self, instance):
-    #     representation = super().to_representation(instance)
-    #     representation['room_code'] = instance.room_code.code if instance.room_code else None
-    #     return representation
 
     @transaction.atomic
     def create(self, validated_data):

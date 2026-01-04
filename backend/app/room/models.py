@@ -2,7 +2,7 @@ from datetime import timedelta
 from decimal import Decimal
 
 from django.db import models
-from django.db.models import JSONField
+from django.db.models import JSONField, Sum
 from rest_framework.exceptions import ValidationError
 
 
@@ -30,6 +30,7 @@ class Room(models.Model):
 
     def __str__(self):
         return self.code
+
 
 class RoomBooking(models.Model):
     ROOM_BOOKING_STATUS_CHOICES = [
@@ -70,7 +71,7 @@ class RoomBooking(models.Model):
         extension_cost = round(hours_added * self.room_code.price_per_hour, 2)
 
         from time_extension.models import TimeExtension # Avoid circular import
-        TimeExtension.objects.create(
+        time_extension = TimeExtension.objects.create(
             room_booking=self,
             duration=hours_added,
             additional_cost=extension_cost,
@@ -79,6 +80,8 @@ class RoomBooking(models.Model):
         self.end_time += timedelta(minutes=minutes)
         self.total_price += extension_cost
         self.save()
+
+        return time_extension
 
     def is_available(self, start_time, end_time):
         overlapping_bookings = RoomBooking.objects.filter(
@@ -92,3 +95,11 @@ class RoomBooking(models.Model):
             overlapping_bookings = overlapping_bookings.exclude(id=self.id)
 
         return not overlapping_bookings.exists()
+
+    @property
+    def original_end_time(self):
+        total_extension_hours = self.time_extensions.aggregate(
+            total=Sum('duration')
+        )['total'] or 0
+
+        return self.end_time - timedelta(hours=float(total_extension_hours))

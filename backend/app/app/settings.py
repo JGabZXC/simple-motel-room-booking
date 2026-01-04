@@ -27,7 +27,15 @@ SECRET_KEY = 'django-insecure-kp1q-i^=l!f-=garl6!6w*xru_-x*kd1xo=m3f$zlj-qo^ddlt
 DEBUG = True
 
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", "backend"]
-CSRF_TRUSTED_ORIGINS = ["http://localhost", "http://127.0.0.1"]
+CORS_ALLOW_CREDENTIALS = True
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
 
 
 # Application definition
@@ -57,9 +65,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-
-CORS_ALLOW_ALL_ORIGINS = True # For development simplicity
-
 
 ROOT_URLCONF = 'app.urls'
 

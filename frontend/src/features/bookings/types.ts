@@ -8,6 +8,7 @@ export interface RoomBooking {
   room_code: string; // FK to Room code
   start_time: string;
   end_time: string;
+  original_end_time: string;
   status: "booked" | "checked_in" | "checked_out" | "cancelled";
   total_price: string;
   booked_at: string;

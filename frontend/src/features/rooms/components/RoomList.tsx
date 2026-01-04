@@ -8,6 +8,8 @@ const RoomList: React.FC = () => {
   const [rooms, setRooms] = useState<Room[]>([]);
   const [loading, setLoading] = useState(true);
 
+  console.log("Rendering RoomList");
+
   useEffect(() => {
     loadRooms();
   }, []);
