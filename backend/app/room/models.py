@@ -79,3 +79,16 @@ class RoomBooking(models.Model):
         self.end_time += timedelta(minutes=minutes)
         self.total_price += extension_cost
         self.save()
+
+    def is_available(self, start_time, end_time):
+        overlapping_bookings = RoomBooking.objects.filter(
+            room_code=self.room_code,
+            status__in=['booked', 'checked_in'],
+            start_time__lt=end_time,
+            end_time__gt=start_time
+        )
+
+        if self.id:
+            overlapping_bookings = overlapping_bookings.exclude(id=self.id)
+
+        return not overlapping_bookings.exists()

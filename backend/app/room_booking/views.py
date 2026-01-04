@@ -12,4 +12,4 @@ class RoomBookingListCreate(ListCreateAPIView):
 class RoomBookingDetailView(RetrieveUpdateAPIView):
     queryset = RoomBooking.objects.all()
     serializer_class = RoomBookingSerializer
-    lookup_field = 'id'
+    lookup_field = 'pk'

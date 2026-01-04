@@ -32,6 +32,15 @@ services:
       - DB_HOST=db
       - DB_PORT=5432
 
+  frontend:
+    build: ./frontend
+    container_name: react_frontend
+    restart: always
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
   nginx:
     image: nginx:alpine
     container_name: nginx_proxy
@@ -43,6 +52,7 @@ services:
       - django_static_volume:/app/staticfiles # Read-only access to CSS
     depends_on:
       - backend
+      - frontend
 
 volumes:
   postgres_data:
