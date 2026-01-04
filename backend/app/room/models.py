@@ -2,6 +2,15 @@ from datetime import timedelta
 from decimal import Decimal
 
 from django.db import models
+from django.db.models import JSONField
+from rest_framework.exceptions import ValidationError
+
+
+def bed_details_validator(value):
+    allowed_types = ['single', 'double', 'queen', 'king']
+    for bed_type in value.keys():
+        if bed_type not in allowed_types:
+            raise ValidationError(f"Invalid bed type: {bed_type}. Allowed types are: {', '.join(allowed_types)}")
 
 class Room(models.Model):
     STATUS_CHOICES = [
@@ -9,11 +18,13 @@ class Room(models.Model):
         ('closed', 'Closed'),
         ('maintenance', 'Maintenance'),
     ]
+
     code = models.CharField(max_length=100) # R101, R102
     capacity = models.PositiveIntegerField()
     is_air_conditioned = models.BooleanField(default=False)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='open')
     price_per_hour = models.DecimalField(max_digits=10, decimal_places=2)
+    bed_details = JSONField(default=dict, blank=True, validators=[bed_details_validator])
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -43,6 +54,9 @@ class RoomBooking(models.Model):
 
     # HELPER METHODS
     def calculate_initial_price(self):
+        if not self.room_code:
+            raise ValidationError("Room code must be set to calculate price.")
+
         duration = self.end_time - self.start_time
         total_hours = Decimal(duration.total_seconds()) / Decimal(3600)
 
@@ -55,7 +69,7 @@ class RoomBooking(models.Model):
         hours_added = Decimal(minutes) / Decimal(60)
         extension_cost = round(hours_added * self.room_code.price_per_hour, 2)
 
-        from time_extension.models import TimeExtension
+        from time_extension.models import TimeExtension # Avoid circular import
         TimeExtension.objects.create(
             room_booking=self,
             duration=hours_added,
