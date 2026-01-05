@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useRoom, useCreateRoom, useUpdateRoom } from "../hooks/useRooms";
 import type { CreateRoomDTO } from "../types";
 import { toast } from "react-toastify";
 
-const RoomForm: React.FC = () => {
+const RoomForm = () => {
   const { code } = useParams<{ code: string }>();
   const navigate = useNavigate();
   const isEditMode = !!code;
@@ -316,8 +316,15 @@ const RoomForm: React.FC = () => {
             <button
               type="submit"
               className="px-6 py-2.5 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-gray-900 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-all"
+              disabled={creating || updating}
             >
-              {isEditMode ? "Update Room" : "Create Room"}
+              {isEditMode
+                ? updating
+                  ? "Updating..."
+                  : "Update Room"
+                : creating
+                ? "Creating..."
+                : "Create Room"}
             </button>
           </div>
         </form>

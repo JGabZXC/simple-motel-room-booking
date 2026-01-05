@@ -1,17 +1,18 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useBookings } from "../hooks/useBookings";
 import { toast } from "react-toastify";
 import type { RoomBooking } from "../types";
 import { Modal } from "../../../shared/components/Modal";
 
-const BookingList: React.FC = () => {
+const BookingList = () => {
   const {
     bookings,
     count,
     next,
     previous,
     loading,
+    setLoading,
     error,
     fetchBookings,
     updateBookingStatus,
@@ -25,8 +26,6 @@ const BookingList: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const pageSize = 10;
 
-  console.log(loading);
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedBookingId, setSelectedBookingId] = useState<number | null>(
     null
@@ -39,15 +38,10 @@ const BookingList: React.FC = () => {
   );
 
   useEffect(() => {
+    setLoading(true);
     const controller = new AbortController();
-    const timer = setTimeout(() => {
-      fetchBookings({ ...filters, page: currentPage }, controller.signal);
-    }, 500);
-
-    return () => {
-      clearTimeout(timer);
-      controller.abort();
-    };
+    fetchBookings({ ...filters, page: currentPage }, controller.signal);
+    return () => controller.abort();
   }, [filters, currentPage]);
 
   const handleFilterChange = (

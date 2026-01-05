@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useRooms, useDeleteRoom } from "../hooks/useRooms";
 import { toast } from "react-toastify";
 
-const RoomList: React.FC = () => {
+const RoomList = () => {
   const { rooms, count, next, previous, loading, error, fetchRooms } =
     useRooms();
   const { deleteRoom } = useDeleteRoom();
@@ -12,26 +12,21 @@ const RoomList: React.FC = () => {
   const [roomCodeSearch, setRoomCodeSearch] = useState("");
   const [minPrice, setMinPrice] = useState<number | "">("");
   const [maxPrice, setMaxPrice] = useState<number | "">("");
-  const pageSize = 10; // Assuming page size is 10
+  const pageSize = 10;
 
-  React.useEffect(() => {
+  useEffect(() => {
     const controller = new AbortController();
-    const timer = setTimeout(() => {
-      fetchRooms(
-        {
-          status: statusFilter || undefined,
-          page: currentPage,
-          code: roomCodeSearch || undefined,
-          min_price: minPrice === "" ? undefined : minPrice,
-          max_price: maxPrice === "" ? undefined : maxPrice,
-        },
-        controller.signal
-      );
-    }, 500);
-    return () => {
-      clearTimeout(timer);
-      controller.abort();
-    };
+    fetchRooms(
+      {
+        status: statusFilter || undefined,
+        page: currentPage,
+        code: roomCodeSearch || undefined,
+        min_price: minPrice === "" ? undefined : minPrice,
+        max_price: maxPrice === "" ? undefined : maxPrice,
+      },
+      controller.signal
+    );
+    return () => controller.abort();
   }, [statusFilter, currentPage, roomCodeSearch, minPrice, maxPrice]);
 
   const handleFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -117,7 +112,6 @@ const RoomList: React.FC = () => {
     );
   };
 
-  if (loading && rooms.length === 0) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
   return (

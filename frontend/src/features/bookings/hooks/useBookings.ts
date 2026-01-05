@@ -27,12 +27,12 @@ export const useBookings = (options?: { skipInitialFetch?: boolean }) => {
       setCount(response.count);
       setNext(response.next);
       setPrevious(response.previous);
+      setLoading(false);
     } catch (err: any) {
       if (err.name !== "CanceledError") {
         setError(err.message || "Failed to load bookings");
+        setLoading(false);
       }
-    } finally {
-      setLoading(false);
     }
   }
 
@@ -64,6 +64,7 @@ export const useBookings = (options?: { skipInitialFetch?: boolean }) => {
     next,
     previous,
     loading,
+    setLoading,
     error,
     fetchBookings,
     updateBookingStatus,

@@ -1,5 +1,5 @@
 import { defaultAxios } from "../../../api/axios";
-import type { CustomerDetail, CustomerResponse } from "../types";
+import type { CustomerResponse } from "../types";
 
 export const customerService = {
   getAll: async (

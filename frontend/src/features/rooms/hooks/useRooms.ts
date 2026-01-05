@@ -29,12 +29,12 @@ export const useRooms = (options?: { skipInitialFetch?: boolean }) => {
       setCount(response.count);
       setNext(response.next);
       setPrevious(response.previous);
+      setLoading(false);
     } catch (err: any) {
       if (err.name !== "CanceledError") {
         setError(err.message || "Failed to load rooms");
+        setLoading(false);
       }
-    } finally {
-      setLoading(false);
     }
   }
 

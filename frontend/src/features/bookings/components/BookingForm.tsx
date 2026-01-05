@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCreateBooking } from "../hooks/useBookings";
 import { useInfiniteRooms } from "../../rooms/hooks/useRooms";
@@ -6,8 +6,9 @@ import type { Room } from "../../rooms/types";
 import type { CreateRoomBookingDTO } from "../types";
 import type { CreateCustomerDetailDTO } from "../../customers/types";
 import { toast } from "react-toastify";
+import { calculateTotalHours } from "../../../shared/utils/calculateTotalHours";
 
-const BookingForm: React.FC = () => {
+const BookingForm = () => {
   const navigate = useNavigate();
   const {
     rooms,
@@ -214,83 +215,89 @@ const BookingForm: React.FC = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="space-y-2">
-                <label className="block text-sm font-medium text-gray-700">
-                  Select Room
-                </label>
-                <div className="relative">
-                  <button
-                    type="button"
-                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                    className="block w-full pl-3 pr-10 py-2.5 text-left text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-lg shadow-sm bg-gray-50"
-                  >
-                    {formData.room_code
-                      ? selectedRoomDisplay || "Room Selected"
-                      : "-- Choose a Room --"}
-                  </button>
-                  {isDropdownOpen && (
-                    <div
-                      className="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm"
-                      onScroll={handleScroll}
+            <div className="space-y-2">
+              <span className="block text-sm text-gray-500 text-right">
+                Total Hours:{" "}
+                {calculateTotalHours(formData.start_time, formData.end_time)}
+              </span>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Select Room
+                  </label>
+                  <div className="relative">
+                    <button
+                      type="button"
+                      onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                      className="block w-full pl-3 pr-10 py-2.5 text-left text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-lg shadow-sm bg-gray-50"
                     >
-                      {rooms.length === 0 && !roomsLoading ? (
-                        <div className="cursor-default select-none relative py-2 pl-3 pr-9 text-gray-700">
-                          No rooms found
-                        </div>
-                      ) : (
-                        rooms.map((room) => (
-                          <div
-                            key={room.id}
-                            onClick={() => handleRoomSelect(room)}
-                            className={`cursor-pointer select-none relative py-2 pl-3 pr-9 hover:bg-indigo-600 hover:text-white ${
-                              formData.room_code === room.id
-                                ? "bg-indigo-600 text-white"
-                                : "text-gray-900"
-                            }`}
-                          >
-                            <span className="block truncate">
-                              {room.code} — ${room.price_per_hour}/hr
-                            </span>
+                      {formData.room_code
+                        ? selectedRoomDisplay || "Room Selected"
+                        : "-- Choose a Room --"}
+                    </button>
+                    {isDropdownOpen && (
+                      <div
+                        className="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm"
+                        onScroll={handleScroll}
+                      >
+                        {rooms.length === 0 && !roomsLoading ? (
+                          <div className="cursor-default select-none relative py-2 pl-3 pr-9 text-gray-700">
+                            No rooms found
                           </div>
-                        ))
-                      )}
-                      {roomsLoading && (
-                        <div className="cursor-default select-none relative py-2 pl-3 pr-9 text-gray-500 text-center">
-                          Loading...
-                        </div>
-                      )}
-                    </div>
-                  )}
+                        ) : (
+                          rooms.map((room) => (
+                            <div
+                              key={room.id}
+                              onClick={() => handleRoomSelect(room)}
+                              className={`cursor-pointer select-none relative py-2 pl-3 pr-9 hover:bg-indigo-600 hover:text-white ${
+                                formData.room_code === room.id
+                                  ? "bg-indigo-600 text-white"
+                                  : "text-gray-900"
+                              }`}
+                            >
+                              <span className="block truncate">
+                                {room.code} — ${room.price_per_hour}/hr
+                              </span>
+                            </div>
+                          ))
+                        )}
+                        {roomsLoading && (
+                          <div className="cursor-default select-none relative py-2 pl-3 pr-9 text-gray-500 text-center">
+                            Loading...
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
 
-              <div className="space-y-2">
-                <label className="block text-sm font-medium text-gray-700">
-                  Start Time
-                </label>
-                <input
-                  type="datetime-local"
-                  name="start_time"
-                  value={formData.start_time}
-                  onChange={handleChange}
-                  className="block w-full px-3 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50"
-                  required
-                />
-              </div>
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Start Time
+                  </label>
+                  <input
+                    type="datetime-local"
+                    name="start_time"
+                    value={formData.start_time}
+                    onChange={handleChange}
+                    className="block w-full px-3 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50"
+                    required
+                  />
+                </div>
 
-              <div className="space-y-2">
-                <label className="block text-sm font-medium text-gray-700">
-                  End Time
-                </label>
-                <input
-                  type="datetime-local"
-                  name="end_time"
-                  value={formData.end_time}
-                  onChange={handleChange}
-                  className="block w-full px-3 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50"
-                  required
-                />
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-gray-700">
+                    End Time
+                  </label>
+                  <input
+                    type="datetime-local"
+                    name="end_time"
+                    value={formData.end_time}
+                    onChange={handleChange}
+                    className="block w-full px-3 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-50"
+                    required
+                  />
+                </div>
               </div>
             </div>
           </section>

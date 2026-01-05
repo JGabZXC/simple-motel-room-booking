@@ -26,12 +26,12 @@ export const useExtensionsForBooking = (bookingId: number) => {
       setCount(data.count);
       setNext(data.next);
       setPrevious(data.previous);
+      setLoading(false);
     } catch (err: any) {
       if (err.name !== "CanceledError") {
         setError(err.message || "Failed to load extensions");
+        setLoading(false);
       }
-    } finally {
-      setLoading(false);
     }
   }
 

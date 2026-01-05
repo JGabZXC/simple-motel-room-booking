@@ -21,12 +21,12 @@ export const useCustomers = () => {
       setCount(response.count);
       setNext(response.next);
       setPrevious(response.previous);
+      setLoading(false);
     } catch (err: any) {
       if (err.name !== "CanceledError") {
         setError(err.message || "Failed to load customers");
+        setLoading(false);
       }
-    } finally {
-      setLoading(false);
     }
   }
 

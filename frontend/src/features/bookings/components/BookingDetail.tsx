@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useBooking, useUpdateBooking } from "../hooks/useBookings";
 import { useExtensionsForBooking } from "../../extensions/hooks/useExtensions";
@@ -8,7 +8,7 @@ import ExtensionForm from "../../extensions/components/ExtensionForm";
 import { toast } from "react-toastify";
 import { Modal } from "../../../shared/components/Modal";
 
-const BookingDetail: React.FC = () => {
+const BookingDetail = () => {
   const { id } = useParams<{ id: string }>();
   const bookingId = parseInt(id || "0");
 

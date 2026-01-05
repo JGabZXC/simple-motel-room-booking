@@ -1,4 +1,3 @@
-import React from "react";
 import type { TimeExtension } from "../types";
 
 interface ExtensionListProps {
@@ -11,7 +10,7 @@ interface ExtensionListProps {
   loading?: boolean;
 }
 
-const ExtensionList: React.FC<ExtensionListProps> = ({
+const ExtensionList = ({
   extensions,
   count,
   next,
@@ -19,7 +18,7 @@ const ExtensionList: React.FC<ExtensionListProps> = ({
   onPageChange,
   currentPage,
   loading,
-}) => {
+}: ExtensionListProps) => {
   const pageSize = 10;
   const totalPages = Math.ceil(count / pageSize);
 

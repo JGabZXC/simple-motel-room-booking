@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useCreateExtension } from "../hooks/useExtensions";
 import { toast } from "react-toastify";
 
@@ -7,10 +7,7 @@ interface ExtensionFormProps {
   onExtensionAdded: () => void;
 }
 
-const ExtensionForm: React.FC<ExtensionFormProps> = ({
-  bookingId,
-  onExtensionAdded,
-}) => {
+const ExtensionForm = ({ bookingId, onExtensionAdded }: ExtensionFormProps) => {
   const [duration, setDuration] = useState(1);
   const { createExtension, loading } = useCreateExtension();
 
