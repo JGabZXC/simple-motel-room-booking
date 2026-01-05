@@ -29,10 +29,12 @@ export const useBookings = (options?: { skipInitialFetch?: boolean }) => {
     }
   }
 
-  async function updateBookingStatus(id: number, status: string) {
+  async function updateBookingStatus(
+    id: number,
+    status: RoomBooking["status"]
+  ) {
     try {
       await bookingService.updateStatus(id, status);
-      // Optimistic update or refetch
       setBookings((prev) =>
         prev.map((b) => (b.id === id ? { ...b, status } : b))
       );

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useBooking, useUpdateBooking } from "../hooks/useBookings";
 import { useExtensionsForBooking } from "../../extensions/hooks/useExtensions";
@@ -6,6 +6,7 @@ import type { RoomBooking } from "../types";
 import ExtensionList from "../../extensions/components/ExtensionList";
 import ExtensionForm from "../../extensions/components/ExtensionForm";
 import { toast } from "react-toastify";
+import { Modal } from "../../../shared/components/Modal";
 
 const BookingDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -19,15 +20,31 @@ const BookingDetail: React.FC = () => {
   const { extensions, fetchExtensions } = useExtensionsForBooking(bookingId);
   const { updateBooking } = useUpdateBooking(bookingId);
 
-  const handleStatusChange = async (newStatus: RoomBooking["status"]) => {
-    if (!booking) return;
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [targetStatus, setTargetStatus] = useState<RoomBooking["status"] | null>(
+    null
+  );
+
+  const handleStatusChange = (newStatus: RoomBooking["status"]) => {
+    setTargetStatus(newStatus);
+    setIsModalOpen(true);
+  };
+
+  const confirmStatusChange = async () => {
+    if (!booking || !targetStatus) return;
     try {
-      await updateBooking({ status: newStatus });
-      toast.success(`Booking status updated to ${newStatus}`);
+      await updateBooking({ status: targetStatus });
+      toast.success(`Booking status updated to ${targetStatus}`);
       fetchBooking(bookingId);
     } catch (error: any) {
       toast.error(error.message || "Failed to update status");
     }
+    closeModal();
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setTargetStatus(null);
   };
 
   const handleExtensionAdded = () => {
@@ -40,6 +57,49 @@ const BookingDetail: React.FC = () => {
 
   return (
     <div className="max-w-7xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
+      <Modal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        title="Confirm Status Change"
+        footer={
+          <>
+            <button
+              onClick={closeModal}
+              className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={confirmStatusChange}
+              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            >
+              Confirm
+            </button>
+          </>
+        }
+      >
+        <div className="space-y-4">
+          <p>
+            Are you sure you want to change the status to{" "}
+            <strong>{targetStatus?.replace("_", " ")}</strong>?
+          </p>
+          {booking && (
+            <div className="bg-gray-50 p-4 rounded-md text-sm text-gray-700 space-y-2">
+              <p>
+                <span className="font-semibold">Room:</span> {booking.room_code}
+              </p>
+              <p>
+                <span className="font-semibold">Start Time:</span>{" "}
+                {new Date(booking.start_time).toLocaleString()}
+              </p>
+              <p>
+                <span className="font-semibold">End Time:</span>{" "}
+                {new Date(booking.end_time).toLocaleString()}
+              </p>
+            </div>
+          )}
+        </div>
+      </Modal>
       {/* Header Section */}
       <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <div>
@@ -124,6 +184,36 @@ const BookingDetail: React.FC = () => {
                   {new Date(booking.booked_at).toLocaleString()}
                 </p>
               </div>
+              {booking.checked_in_at && (
+                <div className="sm:col-span-2">
+                  <p className="text-sm font-medium text-gray-500">
+                    Checked In At
+                  </p>
+                  <p className="mt-1 text-sm text-gray-700">
+                    {new Date(booking.checked_in_at).toLocaleString()}
+                  </p>
+                </div>
+              )}
+              {booking.checked_out_at && (
+                <div className="sm:col-span-2">
+                  <p className="text-sm font-medium text-gray-500">
+                    Checked Out At
+                  </p>
+                  <p className="mt-1 text-sm text-gray-700">
+                    {new Date(booking.checked_out_at).toLocaleString()}
+                  </p>
+                </div>
+              )}
+              {booking.cancelled_at && (
+                <div className="sm:col-span-2">
+                  <p className="text-sm font-medium text-gray-500">
+                    Cancelled At
+                  </p>
+                  <p className="mt-1 text-sm text-gray-700">
+                    {new Date(booking.cancelled_at).toLocaleString()}
+                  </p>
+                </div>
+              )}
             </div>
 
             {/* Actions Footer */}

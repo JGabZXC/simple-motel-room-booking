@@ -26,7 +26,7 @@ const BookingForm: React.FC = () => {
 
   useEffect(() => {
     const controller = new AbortController();
-    const params: any = { status: "open" };
+    const params: Record<string, string> = { status: "open" };
     if (formData.start_time) params.start_time = formData.start_time;
     if (formData.end_time) params.end_time = formData.end_time;
 
@@ -92,8 +92,7 @@ const BookingForm: React.FC = () => {
       toast.success("Booking created successfully");
       navigate("/bookings");
     } catch (error: any) {
-      // Error is handled in hook or here
-      // toast.error(error.message || "Failed to create booking");
+      toast.error(error.message || "Failed to create booking");
     }
   };
   if (roomsLoading) return <div>Loading rooms...</div>;
@@ -349,8 +348,9 @@ const BookingForm: React.FC = () => {
             <button
               type="submit"
               className="px-6 py-2.5 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-gray-900 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-all"
+              disabled={creating}
             >
-              Create Booking
+              {creating ? "Creating..." : "Create Booking"}
             </button>
           </div>
         </form>

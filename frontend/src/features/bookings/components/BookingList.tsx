@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useBookings } from "../hooks/useBookings";
 import { toast } from "react-toastify";
+import type { RoomBooking } from "../types";
+import { Modal } from "../../../shared/components/Modal";
 
 const BookingList: React.FC = () => {
   const { bookings, loading, error, fetchBookings, updateBookingStatus } =
@@ -12,6 +14,11 @@ const BookingList: React.FC = () => {
     end_time: "",
     guest_name: "",
   });
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedBookingId, setSelectedBookingId] = useState<number | null>(null);
+  const [targetStatus, setTargetStatus] = useState<RoomBooking["status"] | null>(null);
+  const [selectedBooking, setSelectedBooking] = useState<RoomBooking | null>(null);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -32,28 +39,83 @@ const BookingList: React.FC = () => {
     setFilters((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleStatusChange = async (id: number, newStatus: string) => {
-    if (
-      window.confirm(
-        `Are you sure you want to change status to ${newStatus.replace(
-          "_",
-          " "
-        )}?`
-      )
-    ) {
+  const handleStatusChange = (id: number, newStatus: RoomBooking["status"]) => {
+    const booking = bookings.find((b) => b.id === id);
+    if (booking) {
+      setSelectedBooking(booking);
+      setSelectedBookingId(id);
+      setTargetStatus(newStatus);
+      setIsModalOpen(true);
+    }
+  };
+
+  const confirmStatusChange = async () => {
+    if (selectedBookingId && targetStatus) {
       try {
-        await updateBookingStatus(id, newStatus);
-        toast.success(`Booking status updated to ${newStatus}`);
+        await updateBookingStatus(selectedBookingId, targetStatus);
+        toast.success(`Booking status updated to ${targetStatus}`);
       } catch (error) {
         toast.error("Failed to update booking status");
       }
     }
+    closeModal();
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedBookingId(null);
+    setTargetStatus(null);
+    setSelectedBooking(null);
   };
 
   if (error) return <div>Error: {error}</div>;
 
   return (
     <div>
+      <Modal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        title="Confirm Status Change"
+        footer={
+          <>
+            <button
+              onClick={closeModal}
+              className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={confirmStatusChange}
+              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            >
+              Confirm
+            </button>
+          </>
+        }
+      >
+        <div className="space-y-4">
+          <p>
+            Are you sure you want to change the status to{" "}
+            <strong>{targetStatus?.replace("_", " ")}</strong>?
+          </p>
+          {selectedBooking && (
+            <div className="bg-gray-50 p-4 rounded-md text-sm text-gray-700 space-y-2">
+              <p>
+                <span className="font-semibold">Room:</span>{" "}
+                {selectedBooking.room_code}
+              </p>
+              <p>
+                <span className="font-semibold">Start Time:</span>{" "}
+                {new Date(selectedBooking.start_time).toLocaleString()}
+              </p>
+              <p>
+                <span className="font-semibold">End Time:</span>{" "}
+                {new Date(selectedBooking.end_time).toLocaleString()}
+              </p>
+            </div>
+          )}
+        </div>
+      </Modal>
       <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
         <div className="flex flex-wrap gap-2">
           <select
