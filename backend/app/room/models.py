@@ -51,7 +51,9 @@ class RoomBooking(models.Model):
     cancelled_at = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
-        return f"Booking {self.room_code.code} ({self.id}) - {self.status}"
+        if self.room_code:
+            return f"Booking {self.room_code.code} ({self.id}) - {self.status}"
+        return f"Booking ({self.id}) - {self.status}"
 
     # HELPER METHODS
     def calculate_initial_price(self):

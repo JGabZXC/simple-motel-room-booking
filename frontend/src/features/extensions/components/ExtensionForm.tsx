@@ -18,7 +18,7 @@ const ExtensionForm = ({ bookingId, onExtensionAdded }: ExtensionFormProps) => {
       toast.success("Extension added successfully");
       onExtensionAdded();
     } catch (error: any) {
-      toast.error(error.message || "Failed to add extension");
+      toast.error(error.response.data?.status || "Failed to add extension");
     }
   };
 

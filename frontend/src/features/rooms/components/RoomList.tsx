@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useRooms, useDeleteRoom } from "../hooks/useRooms";
 import { toast } from "react-toastify";
+import { Modal } from "../../../shared/components/Modal";
+import type { Room } from "../types";
 
 const RoomList = () => {
   const { rooms, count, next, previous, loading, error, fetchRooms } =
@@ -13,6 +15,9 @@ const RoomList = () => {
   const [minPrice, setMinPrice] = useState<number | "">("");
   const [maxPrice, setMaxPrice] = useState<number | "">("");
   const pageSize = 10;
+
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [roomToDelete, setRoomToDelete] = useState<Room | null>(null);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -35,21 +40,33 @@ const RoomList = () => {
     setCurrentPage(1);
   };
 
-  const handleDelete = async (code: string) => {
-    if (window.confirm("Are you sure you want to delete this room?")) {
-      try {
-        await deleteRoom(code);
-        toast.success("Room deleted successfully");
-        fetchRooms({
-          status: statusFilter || undefined,
-          page: currentPage,
-          code: roomCodeSearch || undefined,
-          min_price: minPrice === "" ? undefined : minPrice,
-          max_price: maxPrice === "" ? undefined : maxPrice,
-        });
-      } catch (error) {
-        toast.error("Failed to delete room");
+  const handleDeleteClick = (room: Room) => {
+    setRoomToDelete(room);
+    setIsDeleteModalOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!roomToDelete) return;
+    try {
+      await deleteRoom(roomToDelete.code);
+      toast.success("Room deleted successfully");
+
+      if (rooms.length === 1 && currentPage > 1) {
+        setCurrentPage(currentPage - 1);
       }
+
+      fetchRooms({
+        status: statusFilter || undefined,
+        page: currentPage,
+        code: roomCodeSearch || undefined,
+        min_price: minPrice === "" ? undefined : minPrice,
+        max_price: maxPrice === "" ? undefined : maxPrice,
+      });
+    } catch (error) {
+      toast.error("Failed to delete room");
+    } finally {
+      setIsDeleteModalOpen(false);
+      setRoomToDelete(null);
     }
   };
 
@@ -116,6 +133,50 @@ const RoomList = () => {
 
   return (
     <div>
+      <Modal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        title="Confirm Delete Room"
+        footer={
+          <>
+            <button
+              onClick={() => setIsDeleteModalOpen(false)}
+              className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={confirmDelete}
+              className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+            >
+              Delete
+            </button>
+          </>
+        }
+      >
+        <div className="space-y-4">
+          <p>Are you sure you want to delete this room?</p>
+          {roomToDelete && (
+            <div className="bg-gray-50 p-4 rounded-md border border-gray-200">
+              <div className="grid grid-cols-2 gap-2 text-sm">
+                <span className="font-medium text-gray-500">Code:</span>
+                <span className="text-gray-900">{roomToDelete.code}</span>
+                <span className="font-medium text-gray-500">Price:</span>
+                <span className="text-gray-900">
+                  ${roomToDelete.price_per_hour}/hr
+                </span>
+                <span className="font-medium text-gray-500">Capacity:</span>
+                <span className="text-gray-900">{roomToDelete.capacity}</span>
+                <span className="font-medium text-gray-500">Status:</span>
+                <span className="text-gray-900 capitalize">
+                  {roomToDelete.status}
+                </span>
+              </div>
+            </div>
+          )}
+        </div>
+      </Modal>
+
       <div className="flex flex-col gap-4 mb-6">
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-bold">Rooms</h1>
@@ -150,7 +211,10 @@ const RoomList = () => {
               type="text"
               placeholder="Search Code"
               value={roomCodeSearch}
-              onChange={(e) => setRoomCodeSearch(e.target.value)}
+              onChange={(e) => {
+                setRoomCodeSearch(e.target.value);
+                setCurrentPage(1);
+              }}
               className="border rounded px-2 py-1"
             />
           </div>
@@ -162,9 +226,10 @@ const RoomList = () => {
               type="number"
               placeholder="Min Price"
               value={minPrice}
-              onChange={(e) =>
-                setMinPrice(e.target.value ? Number(e.target.value) : "")
-              }
+              onChange={(e) => {
+                setMinPrice(e.target.value ? Number(e.target.value) : "");
+                setCurrentPage(1);
+              }}
               className="border rounded px-2 py-1"
             />
           </div>
@@ -176,9 +241,10 @@ const RoomList = () => {
               type="number"
               placeholder="Max Price"
               value={maxPrice}
-              onChange={(e) =>
-                setMaxPrice(e.target.value ? Number(e.target.value) : "")
-              }
+              onChange={(e) => {
+                setMaxPrice(e.target.value ? Number(e.target.value) : "");
+                setCurrentPage(1);
+              }}
               className="border rounded px-2 py-1"
             />
           </div>
@@ -257,7 +323,7 @@ const RoomList = () => {
                       </svg>
                     </Link>
                     <button
-                      onClick={() => handleDelete(room.code)}
+                      onClick={() => handleDeleteClick(room)}
                       className="w-4 mr-2 transform hover:text-red-500 hover:scale-110"
                     >
                       <svg

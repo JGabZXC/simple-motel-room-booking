@@ -74,6 +74,8 @@ class RoomBookingUpdateSerializer(serializers.ModelSerializer):
         if room is not None and room.status != 'open':
             raise ValidationError({'room_code': 'The selected room is not available for booking.', 'status': room.status})
 
+        return data
+
     def update(self, instance, validated_data):
         new_status = validated_data.get('status')
 

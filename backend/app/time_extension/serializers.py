@@ -16,8 +16,12 @@ class TimeExtensionSerializer(serializers.ModelSerializer):
         view = self.context.get('view')
         booking = get_object_or_404(RoomBooking, pk=view.kwargs.get('room_booking_pk'))
         duration = validated_data.pop('duration')
+
+        if booking.status in ['checked_out', 'cancelled']:
+            raise ValidationError({'status': f'Cannot extend a booking that is already {booking.status}'})
+
         if not duration:
-            raise ValidationError("Minutes must be greater than zero.")
+            raise ValidationError("Minutes must be greater than zero")
 
         minutes_to_add = duration * 60 # Convert hours to minutes
         new_extension = booking.extend_booking(minutes_to_add)
@@ -27,7 +31,7 @@ class TimeExtensionSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         duration = validated_data.get('duration', instance.duration)
         if duration <= 0:
-            raise ValidationError("Minutes must be greater than zero.")
+            raise ValidationError("Minutes must be greater than zero")
 
         minutes_to_add = duration * 60 # Convert hours to minutes
         instance.booking.extend_booking(minutes_to_add)

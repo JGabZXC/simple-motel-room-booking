@@ -45,7 +45,7 @@ const BookingForm = () => {
     if (maxPrice) params.max_price = Number(maxPrice);
 
     const timer = setTimeout(() => {
-      fetchRooms(params, false);
+      fetchRooms(params, true);
     }, 500);
 
     return () => {

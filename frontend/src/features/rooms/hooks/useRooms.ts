@@ -154,11 +154,7 @@ export const useDeleteRoom = () => {
 };
 
 // in-memory cache
-let roomsCache: {
-  data: Room[];
-  next: string | null;
-  params: string;
-} | null = null;
+const roomsCache = new Map<string, { data: Room[]; next: string | null }>();
 
 export const useInfiniteRooms = () => {
   const [rooms, setRooms] = useState<Room[]>([]);
@@ -179,20 +175,36 @@ export const useInfiniteRooms = () => {
   ) => {
     const paramsString = JSON.stringify(params);
 
-    if (reset || (roomsCache && roomsCache.params !== paramsString)) {
-      roomsCache = null;
+    if (reset) {
+      if (roomsCache.has(paramsString)) {
+        const cached = roomsCache.get(paramsString)!;
+        setRooms(cached.data);
+        setNext(cached.next);
+        return;
+      }
+
+      // Client-side filtering optimization
+      if (params.code) {
+        const { code, ...baseParams } = params;
+        const baseParamsString = JSON.stringify(baseParams);
+
+        if (roomsCache.has(baseParamsString)) {
+          const baseCache = roomsCache.get(baseParamsString)!;
+          const filteredRooms = baseCache.data.filter((r) =>
+            r.code.toLowerCase().includes(code!.toLowerCase())
+          );
+
+          if (filteredRooms.length > 0 || !baseCache.next) {
+            setRooms(filteredRooms);
+            setNext(null);
+            roomsCache.set(paramsString, { data: filteredRooms, next: null });
+            return;
+          }
+        }
+      }
+
       setRooms([]);
       setNext(null);
-    }
-
-    if (
-      roomsCache &&
-      roomsCache.params === paramsString &&
-      rooms.length === 0
-    ) {
-      setRooms(roomsCache.data);
-      setNext(roomsCache.next);
-      return;
     }
 
     if (!reset && rooms.length > 0 && !next) return;
@@ -207,18 +219,19 @@ export const useInfiniteRooms = () => {
         const newRooms = reset
           ? response.results
           : [...prev, ...response.results];
-        roomsCache = {
+        roomsCache.set(paramsString, {
           data: newRooms,
           next: response.next,
-          params: paramsString,
-        };
+        });
         return newRooms;
       });
       setNext(response.next);
-    } catch (err: any) {
-      setError(err.message || "Failed to load rooms");
-    } finally {
       setLoading(false);
+    } catch (err: any) {
+      if (err.name !== "CanceledError") {
+        setError(err.message || "Failed to load rooms");
+        setLoading(false);
+      }
     }
   };
 

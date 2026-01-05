@@ -1,4 +1,4 @@
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateAPIView
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from django.db.models import Q
 from django.utils.dateparse import parse_datetime
 from django.utils import timezone
@@ -54,7 +54,7 @@ class RoomListCreate(ListCreateAPIView):
 
         return queryset.order_by('-created_at')
 
-class RoomDetailView(RetrieveUpdateAPIView):
+class RoomDetailView(RetrieveUpdateDestroyAPIView):
     queryset = Room.objects.all()
     serializer_class = RoomSerializer
     lookup_field = 'code'
