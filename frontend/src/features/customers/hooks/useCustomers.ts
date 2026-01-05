@@ -4,7 +4,7 @@ import { customerService } from "../services/customerService";
 
 export const useCustomers = () => {
   const [customers, setCustomers] = useState<CustomerDetail[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   async function fetchCustomers(signal?: AbortSignal) {

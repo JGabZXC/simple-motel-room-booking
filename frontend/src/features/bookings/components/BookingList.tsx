@@ -15,10 +15,18 @@ const BookingList: React.FC = () => {
     guest_name: "",
   });
 
+  console.log(loading);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedBookingId, setSelectedBookingId] = useState<number | null>(null);
-  const [targetStatus, setTargetStatus] = useState<RoomBooking["status"] | null>(null);
-  const [selectedBooking, setSelectedBooking] = useState<RoomBooking | null>(null);
+  const [selectedBookingId, setSelectedBookingId] = useState<number | null>(
+    null
+  );
+  const [targetStatus, setTargetStatus] = useState<
+    RoomBooking["status"] | null
+  >(null);
+  const [selectedBooking, setSelectedBooking] = useState<RoomBooking | null>(
+    null
+  );
 
   useEffect(() => {
     const controller = new AbortController();

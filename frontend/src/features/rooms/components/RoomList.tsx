@@ -8,8 +8,6 @@ const RoomList: React.FC = () => {
   const { deleteRoom } = useDeleteRoom();
   const [statusFilter, setStatusFilter] = useState<string>("");
 
-  console.log("Rendering RoomList");
-
   const handleFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const status = e.target.value;
     setStatusFilter(status);

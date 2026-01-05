@@ -16,13 +16,6 @@ class RoomBookingSerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ('total_price', 'booked_at', 'checked_in_at', 'checked_out_at', 'cancelled_at')
 
-    @transaction.atomic
-    def create(self, validated_data):
-        # customer_details is read_only in this serializer for now because we handle it manually in the view or we need a separate create serializer
-        # Wait, the previous code had customer_details as writable in create.
-        # I should revert the change to customer_details and only change read_only_fields for status.
-        pass
-
 class RoomBookingCreateSerializer(serializers.ModelSerializer):
     customer_details = CustomerDetailSerializer(many=True)
     
@@ -62,6 +55,10 @@ class RoomBookingUpdateSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         new_status = validated_data.get('status')
+
+        if new_status == 'cancelled' and not instance.can_cancel():
+            raise ValidationError({'status': 'Only bookings with status "booked" can be cancelled.'})
+
         if new_status and new_status != instance.status:
             if new_status == 'checked_in':
                 instance.checked_in_at = timezone.now()

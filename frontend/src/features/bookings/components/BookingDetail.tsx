@@ -21,9 +21,9 @@ const BookingDetail: React.FC = () => {
   const { updateBooking } = useUpdateBooking(bookingId);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [targetStatus, setTargetStatus] = useState<RoomBooking["status"] | null>(
-    null
-  );
+  const [targetStatus, setTargetStatus] = useState<
+    RoomBooking["status"] | null
+  >(null);
 
   const handleStatusChange = (newStatus: RoomBooking["status"]) => {
     setTargetStatus(newStatus);
@@ -37,7 +37,8 @@ const BookingDetail: React.FC = () => {
       toast.success(`Booking status updated to ${targetStatus}`);
       fetchBooking(bookingId);
     } catch (error: any) {
-      toast.error(error.message || "Failed to update status");
+      console.log(error);
+      toast.error(error.response.data.status || "Failed to update status");
     }
     closeModal();
   };

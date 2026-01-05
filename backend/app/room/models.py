@@ -96,6 +96,9 @@ class RoomBooking(models.Model):
 
         return not overlapping_bookings.exists()
 
+    def can_cancel(self):
+        return self.status == 'booked'
+
     @property
     def original_end_time(self):
         total_extension_hours = self.time_extensions.aggregate(

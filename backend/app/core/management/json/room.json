@@ -1,0 +1,802 @@
+[
+  {
+    "code": "R101",
+    "capacity": 1,
+    "is_air_conditioned": false,
+    "status": "open",
+    "price_per_hour": "50.00",
+    "bed_details": { "single": 1 }
+  },
+  {
+    "code": "R102",
+    "capacity": 2,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "80.00",
+    "bed_details": { "double": 1 }
+  },
+  {
+    "code": "R103",
+    "capacity": 2,
+    "is_air_conditioned": true,
+    "status": "maintenance",
+    "price_per_hour": "80.00",
+    "bed_details": { "single": 2 }
+  },
+  {
+    "code": "R104",
+    "capacity": 4,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "150.00",
+    "bed_details": { "queen": 2 }
+  },
+  {
+    "code": "R105",
+    "capacity": 1,
+    "is_air_conditioned": false,
+    "status": "open",
+    "price_per_hour": "50.00",
+    "bed_details": { "single": 1 }
+  },
+  {
+    "code": "R106",
+    "capacity": 2,
+    "is_air_conditioned": false,
+    "status": "open",
+    "price_per_hour": "70.00",
+    "bed_details": { "double": 1 }
+  },
+  {
+    "code": "R107",
+    "capacity": 3,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "120.00",
+    "bed_details": { "queen": 1, "single": 1 }
+  },
+  {
+    "code": "R108",
+    "capacity": 2,
+    "is_air_conditioned": true,
+    "status": "closed",
+    "price_per_hour": "85.00",
+    "bed_details": { "king": 1 }
+  },
+  {
+    "code": "R109",
+    "capacity": 2,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "80.00",
+    "bed_details": { "double": 1 }
+  },
+  {
+    "code": "R110",
+    "capacity": 1,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "60.00",
+    "bed_details": { "single": 1 }
+  },
+  {
+    "code": "R111",
+    "capacity": 4,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "160.00",
+    "bed_details": { "king": 2 }
+  },
+  {
+    "code": "R112",
+    "capacity": 2,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "80.00",
+    "bed_details": { "double": 1 }
+  },
+  {
+    "code": "R113",
+    "capacity": 2,
+    "is_air_conditioned": false,
+    "status": "maintenance",
+    "price_per_hour": "65.00",
+    "bed_details": { "single": 2 }
+  },
+  {
+    "code": "R114",
+    "capacity": 3,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "110.00",
+    "bed_details": { "double": 1, "single": 1 }
+  },
+  {
+    "code": "R115",
+    "capacity": 2,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "90.00",
+    "bed_details": { "king": 1 }
+  },
+  {
+    "code": "R116",
+    "capacity": 1,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "60.00",
+    "bed_details": { "single": 1 }
+  },
+  {
+    "code": "R117",
+    "capacity": 2,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "80.00",
+    "bed_details": { "double": 1 }
+  },
+  {
+    "code": "R118",
+    "capacity": 4,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "150.00",
+    "bed_details": { "queen": 2 }
+  },
+  {
+    "code": "R119",
+    "capacity": 2,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "80.00",
+    "bed_details": { "double": 1 }
+  },
+  {
+    "code": "R120",
+    "capacity": 5,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "200.00",
+    "bed_details": { "king": 2, "single": 1 }
+  },
+  {
+    "code": "R201",
+    "capacity": 2,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "95.00",
+    "bed_details": { "king": 1 }
+  },
+  {
+    "code": "R202",
+    "capacity": 2,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "90.00",
+    "bed_details": { "double": 1 }
+  },
+  {
+    "code": "R203",
+    "capacity": 1,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "65.00",
+    "bed_details": { "single": 1 }
+  },
+  {
+    "code": "R204",
+    "capacity": 4,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "160.00",
+    "bed_details": { "queen": 2 }
+  },
+  {
+    "code": "R205",
+    "capacity": 2,
+    "is_air_conditioned": true,
+    "status": "maintenance",
+    "price_per_hour": "90.00",
+    "bed_details": { "double": 1 }
+  },
+  {
+    "code": "R206",
+    "capacity": 2,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "90.00",
+    "bed_details": { "double": 1 }
+  },
+  {
+    "code": "R207",
+    "capacity": 3,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "130.00",
+    "bed_details": { "queen": 1, "single": 1 }
+  },
+  {
+    "code": "R208",
+    "capacity": 2,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "95.00",
+    "bed_details": { "king": 1 }
+  },
+  {
+    "code": "R209",
+    "capacity": 2,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "90.00",
+    "bed_details": { "double": 1 }
+  },
+  {
+    "code": "R210",
+    "capacity": 1,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "65.00",
+    "bed_details": { "single": 1 }
+  },
+  {
+    "code": "R211",
+    "capacity": 4,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "160.00",
+    "bed_details": { "queen": 2 }
+  },
+  {
+    "code": "R212",
+    "capacity": 2,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "90.00",
+    "bed_details": { "double": 1 }
+  },
+  {
+    "code": "R213",
+    "capacity": 2,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "90.00",
+    "bed_details": { "double": 1 }
+  },
+  {
+    "code": "R214",
+    "capacity": 3,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "130.00",
+    "bed_details": { "double": 1, "single": 1 }
+  },
+  {
+    "code": "R215",
+    "capacity": 2,
+    "is_air_conditioned": true,
+    "status": "closed",
+    "price_per_hour": "95.00",
+    "bed_details": { "king": 1 }
+  },
+  {
+    "code": "R216",
+    "capacity": 1,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "65.00",
+    "bed_details": { "single": 1 }
+  },
+  {
+    "code": "R217",
+    "capacity": 2,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "90.00",
+    "bed_details": { "double": 1 }
+  },
+  {
+    "code": "R218",
+    "capacity": 4,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "170.00",
+    "bed_details": { "king": 2 }
+  },
+  {
+    "code": "R219",
+    "capacity": 2,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "90.00",
+    "bed_details": { "double": 1 }
+  },
+  {
+    "code": "R220",
+    "capacity": 5,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "210.00",
+    "bed_details": { "king": 2, "single": 1 }
+  },
+  {
+    "code": "R301",
+    "capacity": 2,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "100.00",
+    "bed_details": { "king": 1 }
+  },
+  {
+    "code": "R302",
+    "capacity": 2,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "95.00",
+    "bed_details": { "double": 1 }
+  },
+  {
+    "code": "R303",
+    "capacity": 2,
+    "is_air_conditioned": true,
+    "status": "maintenance",
+    "price_per_hour": "95.00",
+    "bed_details": { "single": 2 }
+  },
+  {
+    "code": "R304",
+    "capacity": 4,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "180.00",
+    "bed_details": { "queen": 2 }
+  },
+  {
+    "code": "R305",
+    "capacity": 1,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "70.00",
+    "bed_details": { "single": 1 }
+  },
+  {
+    "code": "R306",
+    "capacity": 2,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "95.00",
+    "bed_details": { "double": 1 }
+  },
+  {
+    "code": "R307",
+    "capacity": 3,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "140.00",
+    "bed_details": { "queen": 1, "single": 1 }
+  },
+  {
+    "code": "R308",
+    "capacity": 2,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "100.00",
+    "bed_details": { "king": 1 }
+  },
+  {
+    "code": "R309",
+    "capacity": 2,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "95.00",
+    "bed_details": { "double": 1 }
+  },
+  {
+    "code": "R310",
+    "capacity": 1,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "70.00",
+    "bed_details": { "single": 1 }
+  },
+  {
+    "code": "R311",
+    "capacity": 4,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "180.00",
+    "bed_details": { "queen": 2 }
+  },
+  {
+    "code": "R312",
+    "capacity": 2,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "95.00",
+    "bed_details": { "double": 1 }
+  },
+  {
+    "code": "R313",
+    "capacity": 2,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "95.00",
+    "bed_details": { "single": 2 }
+  },
+  {
+    "code": "R314",
+    "capacity": 3,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "140.00",
+    "bed_details": { "double": 1, "single": 1 }
+  },
+  {
+    "code": "R315",
+    "capacity": 2,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "100.00",
+    "bed_details": { "king": 1 }
+  },
+  {
+    "code": "R316",
+    "capacity": 1,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "70.00",
+    "bed_details": { "single": 1 }
+  },
+  {
+    "code": "R317",
+    "capacity": 2,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "95.00",
+    "bed_details": { "double": 1 }
+  },
+  {
+    "code": "R318",
+    "capacity": 4,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "190.00",
+    "bed_details": { "king": 2 }
+  },
+  {
+    "code": "R319",
+    "capacity": 2,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "95.00",
+    "bed_details": { "double": 1 }
+  },
+  {
+    "code": "R320",
+    "capacity": 5,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "220.00",
+    "bed_details": { "king": 2, "single": 1 }
+  },
+  {
+    "code": "R401",
+    "capacity": 2,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "110.00",
+    "bed_details": { "king": 1 }
+  },
+  {
+    "code": "R402",
+    "capacity": 2,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "100.00",
+    "bed_details": { "double": 1 }
+  },
+  {
+    "code": "R403",
+    "capacity": 2,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "100.00",
+    "bed_details": { "single": 2 }
+  },
+  {
+    "code": "R404",
+    "capacity": 4,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "190.00",
+    "bed_details": { "queen": 2 }
+  },
+  {
+    "code": "R405",
+    "capacity": 1,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "75.00",
+    "bed_details": { "single": 1 }
+  },
+  {
+    "code": "R406",
+    "capacity": 2,
+    "is_air_conditioned": true,
+    "status": "maintenance",
+    "price_per_hour": "100.00",
+    "bed_details": { "double": 1 }
+  },
+  {
+    "code": "R407",
+    "capacity": 3,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "150.00",
+    "bed_details": { "queen": 1, "single": 1 }
+  },
+  {
+    "code": "R408",
+    "capacity": 2,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "110.00",
+    "bed_details": { "king": 1 }
+  },
+  {
+    "code": "R409",
+    "capacity": 2,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "100.00",
+    "bed_details": { "double": 1 }
+  },
+  {
+    "code": "R410",
+    "capacity": 1,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "75.00",
+    "bed_details": { "single": 1 }
+  },
+  {
+    "code": "R411",
+    "capacity": 4,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "190.00",
+    "bed_details": { "queen": 2 }
+  },
+  {
+    "code": "R412",
+    "capacity": 2,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "100.00",
+    "bed_details": { "double": 1 }
+  },
+  {
+    "code": "R413",
+    "capacity": 2,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "100.00",
+    "bed_details": { "single": 2 }
+  },
+  {
+    "code": "R414",
+    "capacity": 3,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "150.00",
+    "bed_details": { "double": 1, "single": 1 }
+  },
+  {
+    "code": "R415",
+    "capacity": 2,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "110.00",
+    "bed_details": { "king": 1 }
+  },
+  {
+    "code": "R416",
+    "capacity": 1,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "75.00",
+    "bed_details": { "single": 1 }
+  },
+  {
+    "code": "R417",
+    "capacity": 2,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "100.00",
+    "bed_details": { "double": 1 }
+  },
+  {
+    "code": "R418",
+    "capacity": 4,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "200.00",
+    "bed_details": { "king": 2 }
+  },
+  {
+    "code": "R419",
+    "capacity": 2,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "100.00",
+    "bed_details": { "double": 1 }
+  },
+  {
+    "code": "R420",
+    "capacity": 5,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "230.00",
+    "bed_details": { "king": 2, "single": 1 }
+  },
+  {
+    "code": "R501",
+    "capacity": 2,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "120.00",
+    "bed_details": { "king": 1 }
+  },
+  {
+    "code": "R502",
+    "capacity": 2,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "110.00",
+    "bed_details": { "double": 1 }
+  },
+  {
+    "code": "R503",
+    "capacity": 2,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "110.00",
+    "bed_details": { "single": 2 }
+  },
+  {
+    "code": "R504",
+    "capacity": 4,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "210.00",
+    "bed_details": { "queen": 2 }
+  },
+  {
+    "code": "R505",
+    "capacity": 1,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "80.00",
+    "bed_details": { "single": 1 }
+  },
+  {
+    "code": "R506",
+    "capacity": 2,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "110.00",
+    "bed_details": { "double": 1 }
+  },
+  {
+    "code": "R507",
+    "capacity": 3,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "160.00",
+    "bed_details": { "queen": 1, "single": 1 }
+  },
+  {
+    "code": "R508",
+    "capacity": 2,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "120.00",
+    "bed_details": { "king": 1 }
+  },
+  {
+    "code": "R509",
+    "capacity": 2,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "110.00",
+    "bed_details": { "double": 1 }
+  },
+  {
+    "code": "R510",
+    "capacity": 1,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "80.00",
+    "bed_details": { "single": 1 }
+  },
+  {
+    "code": "R511",
+    "capacity": 4,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "210.00",
+    "bed_details": { "queen": 2 }
+  },
+  {
+    "code": "R512",
+    "capacity": 2,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "110.00",
+    "bed_details": { "double": 1 }
+  },
+  {
+    "code": "R513",
+    "capacity": 2,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "110.00",
+    "bed_details": { "single": 2 }
+  },
+  {
+    "code": "R514",
+    "capacity": 3,
+    "is_air_conditioned": true,
+    "status": "closed",
+    "price_per_hour": "160.00",
+    "bed_details": { "double": 1, "single": 1 }
+  },
+  {
+    "code": "R515",
+    "capacity": 2,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "120.00",
+    "bed_details": { "king": 1 }
+  },
+  {
+    "code": "R516",
+    "capacity": 1,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "80.00",
+    "bed_details": { "single": 1 }
+  },
+  {
+    "code": "R517",
+    "capacity": 2,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "110.00",
+    "bed_details": { "double": 1 }
+  },
+  {
+    "code": "R518",
+    "capacity": 4,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "220.00",
+    "bed_details": { "king": 2 }
+  },
+  {
+    "code": "R519",
+    "capacity": 2,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "110.00",
+    "bed_details": { "double": 1 }
+  },
+  {
+    "code": "R520",
+    "capacity": 5,
+    "is_air_conditioned": true,
+    "status": "open",
+    "price_per_hour": "250.00",
+    "bed_details": { "king": 2, "single": 1 }
+  }
+]

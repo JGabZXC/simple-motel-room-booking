@@ -4,7 +4,7 @@ import { roomService } from "../services/roomService";
 
 export const useRooms = (options?: { skipInitialFetch?: boolean }) => {
   const [rooms, setRooms] = useState<Room[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   async function fetchRooms(

@@ -4,7 +4,7 @@ import type { TimeExtension } from "../types";
 
 export const useExtensionsForBooking = (bookingId: number) => {
   const [extensions, setExtensions] = useState<TimeExtension[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   async function fetchExtensions(bookingId: number, signal?: AbortSignal) {
