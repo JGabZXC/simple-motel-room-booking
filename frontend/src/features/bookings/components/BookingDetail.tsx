@@ -17,13 +17,21 @@ const BookingDetail: React.FC = () => {
     loading: bookingLoading,
     fetchBooking,
   } = useBooking(bookingId);
-  const { extensions, fetchExtensions } = useExtensionsForBooking(bookingId);
+  const {
+    extensions,
+    count,
+    next,
+    previous,
+    fetchExtensions,
+    loading: extensionsLoading,
+  } = useExtensionsForBooking(bookingId);
   const { updateBooking } = useUpdateBooking(bookingId);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [targetStatus, setTargetStatus] = useState<
     RoomBooking["status"] | null
   >(null);
+  const [extensionPage, setExtensionPage] = useState(1);
 
   const handleStatusChange = (newStatus: RoomBooking["status"]) => {
     setTargetStatus(newStatus);
@@ -49,8 +57,13 @@ const BookingDetail: React.FC = () => {
   };
 
   const handleExtensionAdded = () => {
-    fetchExtensions(bookingId);
+    fetchExtensions(bookingId, { page: extensionPage });
     fetchBooking(bookingId);
+  };
+
+  const handleExtensionPageChange = (page: number) => {
+    setExtensionPage(page);
+    fetchExtensions(bookingId, { page });
   };
 
   if (bookingLoading) return <div>Loading...</div>;
@@ -268,7 +281,15 @@ const BookingDetail: React.FC = () => {
                 <h3 className="text-sm font-medium text-gray-900 mb-3">
                   Extension History
                 </h3>
-                <ExtensionList extensions={extensions} />
+                <ExtensionList
+                  extensions={extensions}
+                  count={count}
+                  next={next}
+                  previous={previous}
+                  onPageChange={handleExtensionPageChange}
+                  currentPage={extensionPage}
+                  loading={extensionsLoading}
+                />
               </div>
             </div>
           </div>

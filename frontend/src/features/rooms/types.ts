@@ -25,3 +25,10 @@ export interface CreateRoomDTO {
 }
 
 export interface UpdateRoomDTO extends Partial<CreateRoomDTO> {}
+
+export interface RoomResponse {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: Room[];
+}

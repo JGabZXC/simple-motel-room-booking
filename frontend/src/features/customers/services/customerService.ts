@@ -1,11 +1,14 @@
 import { defaultAxios } from "../../../api/axios";
-import type { CustomerDetail } from "../types";
+import type { CustomerDetail, CustomerResponse } from "../types";
 
 export const customerService = {
-  getAll: async (signal?: AbortSignal): Promise<CustomerDetail[]> => {
-    const result = await defaultAxios.get<CustomerDetail[]>(
+  getAll: async (
+    params?: { page?: number },
+    signal?: AbortSignal
+  ): Promise<CustomerResponse> => {
+    const result = await defaultAxios.get<CustomerResponse>(
       "/customer-detail/",
-      { signal }
+      { params, signal }
     );
     return result.data;
   },

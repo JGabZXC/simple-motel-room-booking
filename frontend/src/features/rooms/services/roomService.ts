@@ -1,18 +1,30 @@
 import { axiosJSON, defaultAxios } from "../../../api/axios";
-import type { Room, CreateRoomDTO, UpdateRoomDTO } from "../types";
+import type {
+  Room,
+  CreateRoomDTO,
+  UpdateRoomDTO,
+  RoomResponse,
+} from "../types";
 
 interface RoomQueryParams {
   status?: string;
   start_time?: string;
   end_time?: string;
+  page?: number;
+  code?: string;
+  min_price?: number;
+  max_price?: number;
 }
 
 export const roomService = {
   getAll: async (
     params?: RoomQueryParams,
     signal?: AbortSignal
-  ): Promise<Room[]> => {
-    const result = await defaultAxios.get<Room[]>("/room/", { params, signal });
+  ): Promise<RoomResponse> => {
+    const result = await defaultAxios.get<RoomResponse>("/room/", {
+      params,
+      signal,
+    });
     return result.data;
   },
 

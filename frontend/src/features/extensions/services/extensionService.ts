@@ -1,14 +1,19 @@
 import { axiosJSON, defaultAxios } from "../../../api/axios";
-import type { TimeExtension, CreateTimeExtensionDTO } from "../types";
+import type {
+  TimeExtension,
+  CreateTimeExtensionDTO,
+  ExtensionResponse,
+} from "../types";
 
 export const extensionService = {
   getAllForBooking: async (
     bookingId: number,
+    params?: { page?: number },
     signal?: AbortSignal
-  ): Promise<TimeExtension[]> => {
-    const result = await defaultAxios.get<TimeExtension[]>(
+  ): Promise<ExtensionResponse> => {
+    const result = await defaultAxios.get<ExtensionResponse>(
       `/time-extension/${bookingId}/extensions/`,
-      { signal }
+      { params, signal }
     );
     return result.data;
   },

@@ -12,10 +12,22 @@ class RoomListCreate(ListCreateAPIView):
     serializer_class = RoomSerializer
 
     def get_queryset(self):
-        queryset = Room.objects.all()
+        queryset = Room.objects.all().order_by()
         status = self.request.query_params.get('status')
         if status:
             queryset = queryset.filter(status=status)
+
+        code = self.request.query_params.get('code')
+        if code:
+            queryset = queryset.filter(code__icontains=code)
+
+        min_price = self.request.query_params.get('min_price')
+        if min_price:
+            queryset = queryset.filter(price_per_hour__gte=min_price)
+
+        max_price = self.request.query_params.get('max_price')
+        if max_price:
+            queryset = queryset.filter(price_per_hour__lte=max_price)
 
         start_time_str = self.request.query_params.get('start_time')
         end_time_str = self.request.query_params.get('end_time')
@@ -40,7 +52,7 @@ class RoomListCreate(ListCreateAPIView):
 
                 queryset = queryset.exclude(id__in=overlapping_bookings)
 
-        return queryset
+        return queryset.order_by('-created_at')
 
 class RoomDetailView(RetrieveUpdateAPIView):
     queryset = Room.objects.all()

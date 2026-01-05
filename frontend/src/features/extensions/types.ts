@@ -9,3 +9,10 @@ export interface TimeExtension {
 export interface CreateTimeExtensionDTO {
   duration: number;
 }
+
+export interface ExtensionResponse {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: TimeExtension[];
+}

@@ -24,6 +24,22 @@ class RoomBookingCreateSerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ('total_price', 'status', 'booked_at', 'checked_in_at', 'checked_out_at', 'cancelled_at')
 
+    def validate(self, data):
+        room = data.get('room_code')
+        start_time = data.get('start_time')
+        end_time = data.get('end_time')
+        if room.status != 'open':
+            raise ValidationError({'room_code': 'The selected room is not available for booking.', 'status': room.status})
+
+        current_time = timezone.now()
+        if start_time <= current_time:
+            raise ValidationError({'start_time': 'The start time is invalid.'})
+        if end_time <= start_time:
+            raise ValidationError({'end_time': 'The end time must be after the start time.'})
+
+        return data
+
+
     @transaction.atomic
     def create(self, validated_data):
         customer_details = validated_data.pop('customer_details')
@@ -52,6 +68,11 @@ class RoomBookingUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = RoomBooking
         fields = ['status']
+
+    def validate(self, data):
+        room = data.get('room_code')
+        if room is not None and room.status != 'open':
+            raise ValidationError({'room_code': 'The selected room is not available for booking.', 'status': room.status})
 
     def update(self, instance, validated_data):
         new_status = validated_data.get('status')

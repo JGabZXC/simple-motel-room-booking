@@ -4,14 +4,40 @@ import { useRooms, useDeleteRoom } from "../hooks/useRooms";
 import { toast } from "react-toastify";
 
 const RoomList: React.FC = () => {
-  const { rooms, loading, error, fetchRooms } = useRooms();
+  const { rooms, count, next, previous, loading, error, fetchRooms } =
+    useRooms();
   const { deleteRoom } = useDeleteRoom();
   const [statusFilter, setStatusFilter] = useState<string>("");
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [roomCodeSearch, setRoomCodeSearch] = useState("");
+  const [minPrice, setMinPrice] = useState<number | "">("");
+  const [maxPrice, setMaxPrice] = useState<number | "">("");
+  const pageSize = 10; // Assuming page size is 10
+
+  React.useEffect(() => {
+    const controller = new AbortController();
+    const timer = setTimeout(() => {
+      fetchRooms(
+        {
+          status: statusFilter || undefined,
+          page: currentPage,
+          code: roomCodeSearch || undefined,
+          min_price: minPrice === "" ? undefined : minPrice,
+          max_price: maxPrice === "" ? undefined : maxPrice,
+        },
+        controller.signal
+      );
+    }, 500);
+    return () => {
+      clearTimeout(timer);
+      controller.abort();
+    };
+  }, [statusFilter, currentPage, roomCodeSearch, minPrice, maxPrice]);
 
   const handleFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const status = e.target.value;
     setStatusFilter(status);
-    fetchRooms(status ? { status } : undefined);
+    setCurrentPage(1);
   };
 
   const handleDelete = async (code: string) => {
@@ -19,31 +45,86 @@ const RoomList: React.FC = () => {
       try {
         await deleteRoom(code);
         toast.success("Room deleted successfully");
-        fetchRooms(statusFilter ? { status: statusFilter } : undefined);
+        fetchRooms({
+          status: statusFilter || undefined,
+          page: currentPage,
+          code: roomCodeSearch || undefined,
+          min_price: minPrice === "" ? undefined : minPrice,
+          max_price: maxPrice === "" ? undefined : maxPrice,
+        });
       } catch (error) {
         toast.error("Failed to delete room");
       }
     }
   };
 
-  if (loading) return <div>Loading...</div>;
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const totalPages = Math.ceil(count / pageSize);
+
+  const renderPagination = () => {
+    if (totalPages <= 1) return null;
+
+    const pages = [];
+    const maxPagesSide = 5;
+    const startPage = Math.max(1, currentPage - maxPagesSide);
+    const endPage = Math.min(totalPages, currentPage + maxPagesSide);
+
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(
+        <button
+          key={i}
+          onClick={() => handlePageChange(i)}
+          className={`px-3 py-1 mx-1 border rounded ${
+            currentPage === i
+              ? "bg-blue-500 text-white"
+              : "bg-white text-blue-500 hover:bg-blue-100"
+          }`}
+        >
+          {i}
+        </button>
+      );
+    }
+
+    return (
+      <div className="flex justify-center items-center mt-4">
+        <button
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={!previous}
+          className={`px-3 py-1 mx-1 border rounded ${
+            !previous
+              ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+              : "bg-white text-blue-500 hover:bg-blue-100"
+          }`}
+        >
+          Prev
+        </button>
+        {pages}
+        <button
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={!next}
+          className={`px-3 py-1 mx-1 border rounded ${
+            !next
+              ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+              : "bg-white text-blue-500 hover:bg-blue-100"
+          }`}
+        >
+          Next
+        </button>
+      </div>
+    );
+  };
+
+  if (loading && rooms.length === 0) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Rooms</h1>
-        <div className="flex gap-4">
-          <select
-            value={statusFilter}
-            onChange={handleFilterChange}
-            className="border rounded px-2 py-1"
-          >
-            <option value="">All Statuses</option>
-            <option value="open">Open</option>
-            <option value="closed">Closed</option>
-            <option value="maintenance">Maintenance</option>
-          </select>
+      <div className="flex flex-col gap-4 mb-6">
+        <div className="flex justify-between items-center">
+          <h1 className="text-2xl font-bold">Rooms</h1>
           <Link
             to="/rooms/new"
             className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
@@ -51,8 +132,70 @@ const RoomList: React.FC = () => {
             Add Room
           </Link>
         </div>
+        <div className="flex gap-4 flex-wrap bg-gray-50 p-4 rounded-lg border border-gray-200">
+          <div className="flex flex-col">
+            <label className="text-xs font-medium text-gray-500 mb-1">
+              Status
+            </label>
+            <select
+              value={statusFilter}
+              onChange={handleFilterChange}
+              className="border rounded px-2 py-1"
+            >
+              <option value="">All Statuses</option>
+              <option value="open">Open</option>
+              <option value="closed">Closed</option>
+              <option value="maintenance">Maintenance</option>
+            </select>
+          </div>
+          <div className="flex flex-col">
+            <label className="text-xs font-medium text-gray-500 mb-1">
+              Code
+            </label>
+            <input
+              type="text"
+              placeholder="Search Code"
+              value={roomCodeSearch}
+              onChange={(e) => setRoomCodeSearch(e.target.value)}
+              className="border rounded px-2 py-1"
+            />
+          </div>
+          <div className="flex flex-col">
+            <label className="text-xs font-medium text-gray-500 mb-1">
+              Min Price
+            </label>
+            <input
+              type="number"
+              placeholder="Min Price"
+              value={minPrice}
+              onChange={(e) =>
+                setMinPrice(e.target.value ? Number(e.target.value) : "")
+              }
+              className="border rounded px-2 py-1"
+            />
+          </div>
+          <div className="flex flex-col">
+            <label className="text-xs font-medium text-gray-500 mb-1">
+              Max Price
+            </label>
+            <input
+              type="number"
+              placeholder="Max Price"
+              value={maxPrice}
+              onChange={(e) =>
+                setMaxPrice(e.target.value ? Number(e.target.value) : "")
+              }
+              className="border rounded px-2 py-1"
+            />
+          </div>
+        </div>
       </div>
-      <div className="bg-white shadow-md rounded my-6">
+      <div className="bg-white shadow-md rounded my-6 relative">
+        {loading && (
+          <div className="absolute inset-0 bg-white bg-opacity-50 flex justify-center items-center z-10">
+            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-500"></div>
+          </div>
+        )}
         <table className="min-w-full table-auto">
           <thead>
             <tr className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
@@ -143,6 +286,10 @@ const RoomList: React.FC = () => {
             ))}
           </tbody>
         </table>
+      </div>
+      <div className="flex justify-between items-center">
+        <span className="text-gray-600">Total Rooms: {count}</span>
+        {renderPagination()}
       </div>
     </div>
   );

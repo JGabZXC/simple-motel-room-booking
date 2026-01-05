@@ -4,14 +4,28 @@ import type { TimeExtension } from "../types";
 
 export const useExtensionsForBooking = (bookingId: number) => {
   const [extensions, setExtensions] = useState<TimeExtension[]>([]);
+  const [count, setCount] = useState<number>(0);
+  const [next, setNext] = useState<string | null>(null);
+  const [previous, setPrevious] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  async function fetchExtensions(bookingId: number, signal?: AbortSignal) {
+  async function fetchExtensions(
+    bookingId: number,
+    params?: { page?: number },
+    signal?: AbortSignal
+  ) {
     try {
       setLoading(true);
-      const data = await extensionService.getAllForBooking(bookingId, signal);
-      setExtensions(data);
+      const data = await extensionService.getAllForBooking(
+        bookingId,
+        params,
+        signal
+      );
+      setExtensions(data.results);
+      setCount(data.count);
+      setNext(data.next);
+      setPrevious(data.previous);
     } catch (err: any) {
       if (err.name !== "CanceledError") {
         setError(err.message || "Failed to load extensions");
@@ -24,13 +38,16 @@ export const useExtensionsForBooking = (bookingId: number) => {
   useEffect(() => {
     const controller = new AbortController();
     if (bookingId) {
-      fetchExtensions(bookingId, controller.signal);
+      fetchExtensions(bookingId, undefined, controller.signal);
     }
     return () => controller.abort();
   }, [bookingId]);
 
   return {
     extensions,
+    count,
+    next,
+    previous,
     loading,
     error,
     fetchExtensions,

@@ -4,17 +4,31 @@ import { roomService } from "../services/roomService";
 
 export const useRooms = (options?: { skipInitialFetch?: boolean }) => {
   const [rooms, setRooms] = useState<Room[]>([]);
+  const [count, setCount] = useState<number>(0);
+  const [next, setNext] = useState<string | null>(null);
+  const [previous, setPrevious] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   async function fetchRooms(
-    params?: { status?: string; start_time?: string; end_time?: string },
+    params?: {
+      status?: string;
+      start_time?: string;
+      end_time?: string;
+      page?: number;
+      code?: string;
+      min_price?: number;
+      max_price?: number;
+    },
     signal?: AbortSignal
   ) {
     try {
       setLoading(true);
       const response = await roomService.getAll(params, signal);
-      setRooms(response);
+      setRooms(response.results);
+      setCount(response.count);
+      setNext(response.next);
+      setPrevious(response.previous);
     } catch (err: any) {
       if (err.name !== "CanceledError") {
         setError(err.message || "Failed to load rooms");
@@ -33,6 +47,9 @@ export const useRooms = (options?: { skipInitialFetch?: boolean }) => {
 
   return {
     rooms,
+    count,
+    next,
+    previous,
     loading,
     error,
     fetchRooms,
@@ -133,5 +150,83 @@ export const useDeleteRoom = () => {
     loading,
     error,
     deleteRoom,
+  };
+};
+
+// in-memory cache
+let roomsCache: {
+  data: Room[];
+  next: string | null;
+  params: string;
+} | null = null;
+
+export const useInfiniteRooms = () => {
+  const [rooms, setRooms] = useState<Room[]>([]);
+  const [next, setNext] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchRooms = async (
+    params: {
+      status?: string;
+      start_time?: string;
+      end_time?: string;
+      code?: string;
+      min_price?: number;
+      max_price?: number;
+    },
+    reset = false
+  ) => {
+    const paramsString = JSON.stringify(params);
+
+    if (reset || (roomsCache && roomsCache.params !== paramsString)) {
+      roomsCache = null;
+      setRooms([]);
+      setNext(null);
+    }
+
+    if (
+      roomsCache &&
+      roomsCache.params === paramsString &&
+      rooms.length === 0
+    ) {
+      setRooms(roomsCache.data);
+      setNext(roomsCache.next);
+      return;
+    }
+
+    if (!reset && rooms.length > 0 && !next) return;
+
+    try {
+      setLoading(true);
+      const nextPage = reset ? 1 : Math.ceil(rooms.length / 10) + 1;
+
+      const response = await roomService.getAll({ ...params, page: nextPage });
+
+      setRooms((prev) => {
+        const newRooms = reset
+          ? response.results
+          : [...prev, ...response.results];
+        roomsCache = {
+          data: newRooms,
+          next: response.next,
+          params: paramsString,
+        };
+        return newRooms;
+      });
+      setNext(response.next);
+    } catch (err: any) {
+      setError(err.message || "Failed to load rooms");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return {
+    rooms,
+    next,
+    loading,
+    error,
+    fetchRooms,
   };
 };

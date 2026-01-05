@@ -30,3 +30,10 @@ export interface UpdateRoomBookingDTO {
   start_time?: string;
   end_time?: string;
 }
+
+export interface BookingResponse {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: RoomBooking[];
+}

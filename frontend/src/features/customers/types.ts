@@ -15,3 +15,10 @@ export interface CreateCustomerDetailDTO {
   phone_number?: string;
   gender: "male" | "female" | "other";
 }
+
+export interface CustomerResponse {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: CustomerDetail[];
+}

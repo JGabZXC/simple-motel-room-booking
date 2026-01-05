@@ -3,6 +3,7 @@ import type {
   RoomBooking,
   CreateRoomBookingDTO,
   UpdateRoomBookingDTO,
+  BookingResponse,
 } from "../types";
 
 interface BookingQueryParams {
@@ -10,14 +11,15 @@ interface BookingQueryParams {
   start_time?: string;
   end_time?: string;
   guest_name?: string;
+  page?: number;
 }
 
 export const bookingService = {
   getAll: async (
     params?: BookingQueryParams,
     signal?: AbortSignal
-  ): Promise<RoomBooking[]> => {
-    const result = await defaultAxios.get<RoomBooking[]>("/room-booking/", {
+  ): Promise<BookingResponse> => {
+    const result = await defaultAxios.get<BookingResponse>("/room-booking/", {
       params,
       signal,
     });

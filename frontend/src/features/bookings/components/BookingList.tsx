@@ -6,14 +6,24 @@ import type { RoomBooking } from "../types";
 import { Modal } from "../../../shared/components/Modal";
 
 const BookingList: React.FC = () => {
-  const { bookings, loading, error, fetchBookings, updateBookingStatus } =
-    useBookings({ skipInitialFetch: true });
+  const {
+    bookings,
+    count,
+    next,
+    previous,
+    loading,
+    error,
+    fetchBookings,
+    updateBookingStatus,
+  } = useBookings({ skipInitialFetch: true });
   const [filters, setFilters] = useState({
     status: "",
     start_time: "",
     end_time: "",
     guest_name: "",
   });
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const pageSize = 10;
 
   console.log(loading);
 
@@ -31,20 +41,80 @@ const BookingList: React.FC = () => {
   useEffect(() => {
     const controller = new AbortController();
     const timer = setTimeout(() => {
-      fetchBookings(filters, controller.signal);
+      fetchBookings({ ...filters, page: currentPage }, controller.signal);
     }, 500);
 
     return () => {
       clearTimeout(timer);
       controller.abort();
     };
-  }, [filters]);
+  }, [filters, currentPage]);
 
   const handleFilterChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
     setFilters((prev) => ({ ...prev, [name]: value }));
+    setCurrentPage(1);
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const totalPages = Math.ceil(count / pageSize);
+
+  const renderPagination = () => {
+    if (totalPages <= 1) return null;
+
+    const pages = [];
+    const maxPagesSide = 5;
+    const startPage = Math.max(1, currentPage - maxPagesSide);
+    const endPage = Math.min(totalPages, currentPage + maxPagesSide);
+
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(
+        <button
+          key={i}
+          onClick={() => handlePageChange(i)}
+          className={`px-3 py-1 mx-1 border rounded ${
+            currentPage === i
+              ? "bg-blue-500 text-white"
+              : "bg-white text-blue-500 hover:bg-blue-100"
+          }`}
+        >
+          {i}
+        </button>
+      );
+    }
+
+    return (
+      <div className="flex justify-center items-center mt-4">
+        <button
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={!previous}
+          className={`px-3 py-1 mx-1 border rounded ${
+            !previous
+              ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+              : "bg-white text-blue-500 hover:bg-blue-100"
+          }`}
+        >
+          Prev
+        </button>
+        {pages}
+        <button
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={!next}
+          className={`px-3 py-1 mx-1 border rounded ${
+            !next
+              ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+              : "bg-white text-blue-500 hover:bg-blue-100"
+          }`}
+        >
+          Next
+        </button>
+      </div>
+    );
   };
 
   const handleStatusChange = (id: number, newStatus: RoomBooking["status"]) => {
@@ -260,6 +330,10 @@ const BookingList: React.FC = () => {
             ))}
           </tbody>
         </table>
+      </div>
+      <div className="flex justify-between items-center">
+        <span className="text-gray-600">Total Bookings: {count}</span>
+        {renderPagination()}
       </div>
     </div>
   );
