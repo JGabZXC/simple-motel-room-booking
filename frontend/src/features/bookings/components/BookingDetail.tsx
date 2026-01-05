@@ -1,52 +1,41 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useParams, Link } from "react-router-dom";
-import { bookingService } from "../services/bookingService";
-import { extensionService } from "../../extensions/services/extensionService";
+import { useBooking, useUpdateBooking } from "../hooks/useBookings";
+import { useExtensionsForBooking } from "../../extensions/hooks/useExtensions";
 import type { RoomBooking } from "../types";
-import type { TimeExtension } from "../../extensions/types";
 import ExtensionList from "../../extensions/components/ExtensionList";
 import ExtensionForm from "../../extensions/components/ExtensionForm";
 import { toast } from "react-toastify";
 
 const BookingDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const [booking, setBooking] = useState<RoomBooking | null>(null);
-  const [extensions, setExtensions] = useState<TimeExtension[]>([]);
-  const [loading, setLoading] = useState(true);
+  const bookingId = parseInt(id || "0");
 
-  useEffect(() => {
-    loadData();
-  }, [id]);
-
-  const loadData = async () => {
-    if (!id) return;
-    try {
-      const bookingData = await bookingService.get(parseInt(id));
-      setBooking(bookingData);
-
-      const extensionData = await extensionService.getAllForBooking(
-        parseInt(id)
-      );
-      setExtensions(extensionData);
-    } catch (error) {
-      toast.error("Failed to load booking details");
-    } finally {
-      setLoading(false);
-    }
-  };
+  const {
+    booking,
+    loading: bookingLoading,
+    fetchBooking,
+  } = useBooking(bookingId);
+  const { extensions, fetchExtensions } = useExtensionsForBooking(bookingId);
+  const { updateBooking } = useUpdateBooking(bookingId);
 
   const handleStatusChange = async (newStatus: RoomBooking["status"]) => {
     if (!booking) return;
     try {
-      await bookingService.update(booking.id, { status: newStatus });
+      await updateBooking({ status: newStatus });
       toast.success(`Booking status updated to ${newStatus}`);
-      loadData();
+      fetchBooking(bookingId);
     } catch (error: any) {
       toast.error(error.message || "Failed to update status");
     }
   };
 
-  if (loading) return <div>Loading...</div>;
+  const handleExtensionAdded = () => {
+    fetchExtensions(bookingId);
+    fetchBooking(bookingId);
+  };
+
+  if (bookingLoading) return <div>Loading...</div>;
   if (!booking) return <div>Booking not found</div>;
 
   return (
@@ -181,7 +170,7 @@ const BookingDetail: React.FC = () => {
                 </h3>
                 <ExtensionForm
                   bookingId={booking.id}
-                  onExtensionAdded={loadData}
+                  onExtensionAdded={handleExtensionAdded}
                 />
               </div>
               <div>
@@ -210,7 +199,7 @@ const BookingDetail: React.FC = () => {
                   className="p-6 hover:bg-gray-50 transition-colors"
                 >
                   <div className="flex items-center space-x-4">
-                    <div className="flex-shrink-0">
+                    <div className="shrink-0">
                       <span className="inline-flex items-center justify-center h-10 w-10 rounded-full bg-indigo-100 text-indigo-500 font-semibold text-lg">
                         {customer.name.charAt(0).toUpperCase()}
                       </span>

@@ -1,15 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { bookingService } from "../services/bookingService";
-import { roomService } from "../../rooms/services/roomService";
+import { useCreateBooking } from "../hooks/useBookings";
+import { useRooms } from "../../rooms/hooks/useRooms";
 import type { CreateRoomBookingDTO } from "../types";
 import type { CreateCustomerDetailDTO } from "../../customers/types";
-import type { Room } from "../../rooms/types";
 import { toast } from "react-toastify";
 
 const BookingForm: React.FC = () => {
   const navigate = useNavigate();
-  const [rooms, setRooms] = useState<Room[]>([]);
+  const {
+    rooms,
+    loading: roomsLoading,
+    fetchRooms,
+  } = useRooms({
+    skipInitialFetch: true,
+  });
+  const { createBooking, loading: creating } = useCreateBooking();
 
   const [formData, setFormData] = useState<CreateRoomBookingDTO>({
     room_code: "",
@@ -18,6 +24,16 @@ const BookingForm: React.FC = () => {
     customer_details: [],
   });
 
+  useEffect(() => {
+    const controller = new AbortController();
+    const params: any = { status: "open" };
+    if (formData.start_time) params.start_time = formData.start_time;
+    if (formData.end_time) params.end_time = formData.end_time;
+
+    fetchRooms(params, controller.signal);
+    return () => controller.abort();
+  }, [formData.start_time, formData.end_time]);
+
   const [customer, setCustomer] = useState<CreateCustomerDetailDTO>({
     name: "",
     age: 18,
@@ -25,20 +41,6 @@ const BookingForm: React.FC = () => {
     phone_number: "",
     gender: "male",
   });
-
-  useEffect(() => {
-    loadRooms();
-  }, []);
-
-  const loadRooms = async () => {
-    try {
-      const data = await roomService.getAll();
-      // Filter only open rooms or handle availability check later
-      setRooms(data.filter((r) => r.status === "open"));
-    } catch (error) {
-      toast.error("Failed to load rooms");
-    }
-  };
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -86,15 +88,15 @@ const BookingForm: React.FC = () => {
       return;
     }
     try {
-      await bookingService.create(formData);
+      await createBooking(formData);
       toast.success("Booking created successfully");
       navigate("/bookings");
     } catch (error: any) {
-      toast.error(error.message || "Failed to create booking");
+      // Error is handled in hook or here
+      // toast.error(error.message || "Failed to create booking");
     }
   };
-
-  console.log(formData);
+  if (roomsLoading) return <div>Loading rooms...</div>;
 
   return (
     <div className="max-w-5xl mx-auto py-10 px-4 sm:px-6 lg:px-8">

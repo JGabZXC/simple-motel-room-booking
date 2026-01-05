@@ -1,28 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { customerService } from "../services/customerService";
-import type { CustomerDetail } from "../types";
+import React from "react";
+import { useCustomers } from "../hooks/useCustomers";
 import { toast } from "react-toastify";
 
 const CustomerList: React.FC = () => {
-  const [customers, setCustomers] = useState<CustomerDetail[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    loadCustomers();
-  }, []);
-
-  const loadCustomers = async () => {
-    try {
-      const data = await customerService.getAll();
-      setCustomers(data);
-    } catch (error) {
-      toast.error("Failed to load customers");
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { customers, loading, error } = useCustomers();
 
   if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
 
   return (
     <div>

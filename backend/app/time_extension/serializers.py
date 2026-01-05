@@ -24,3 +24,15 @@ class TimeExtensionSerializer(serializers.ModelSerializer):
 
         return new_extension
 
+    def update(self, instance, validated_data):
+        duration = validated_data.get('duration', instance.duration)
+        if duration <= 0:
+            raise ValidationError("Minutes must be greater than zero.")
+
+        minutes_to_add = duration * 60 # Convert hours to minutes
+        instance.booking.extend_booking(minutes_to_add)
+
+        instance.duration = duration
+        instance.save()
+        return instance
+

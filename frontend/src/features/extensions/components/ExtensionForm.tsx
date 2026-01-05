@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { extensionService } from "../services/extensionService";
+import { useCreateExtension } from "../hooks/useExtensions";
 import { toast } from "react-toastify";
 
 interface ExtensionFormProps {
@@ -12,19 +12,16 @@ const ExtensionForm: React.FC<ExtensionFormProps> = ({
   onExtensionAdded,
 }) => {
   const [duration, setDuration] = useState(1);
-  const [loading, setLoading] = useState(false);
+  const { createExtension, loading } = useCreateExtension();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
     try {
-      await extensionService.create(bookingId, { duration });
+      await createExtension(bookingId, { duration });
       toast.success("Extension added successfully");
       onExtensionAdded();
     } catch (error: any) {
       toast.error(error.message || "Failed to add extension");
-    } finally {
-      setLoading(false);
     }
   };
 

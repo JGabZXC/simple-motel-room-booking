@@ -1,36 +1,27 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { roomService } from "../services/roomService";
-import type { Room } from "../types";
+import { useRooms, useDeleteRoom } from "../hooks/useRooms";
 import { toast } from "react-toastify";
 
 const RoomList: React.FC = () => {
-  const [rooms, setRooms] = useState<Room[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { rooms, loading, error, fetchRooms } = useRooms();
+  const { deleteRoom } = useDeleteRoom();
+  const [statusFilter, setStatusFilter] = useState<string>("");
 
   console.log("Rendering RoomList");
 
-  useEffect(() => {
-    loadRooms();
-  }, []);
-
-  const loadRooms = async () => {
-    try {
-      const data = await roomService.getAll();
-      setRooms(data);
-    } catch (error) {
-      toast.error("Failed to load rooms");
-    } finally {
-      setLoading(false);
-    }
+  const handleFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const status = e.target.value;
+    setStatusFilter(status);
+    fetchRooms(status ? { status } : undefined);
   };
 
   const handleDelete = async (code: string) => {
     if (window.confirm("Are you sure you want to delete this room?")) {
       try {
-        await roomService.delete(code);
+        await deleteRoom(code);
         toast.success("Room deleted successfully");
-        loadRooms();
+        fetchRooms(statusFilter ? { status: statusFilter } : undefined);
       } catch (error) {
         toast.error("Failed to delete room");
       }
@@ -38,17 +29,30 @@ const RoomList: React.FC = () => {
   };
 
   if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
 
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Rooms</h1>
-        <Link
-          to="/rooms/new"
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-        >
-          Add Room
-        </Link>
+        <div className="flex gap-4">
+          <select
+            value={statusFilter}
+            onChange={handleFilterChange}
+            className="border rounded px-2 py-1"
+          >
+            <option value="">All Statuses</option>
+            <option value="open">Open</option>
+            <option value="closed">Closed</option>
+            <option value="maintenance">Maintenance</option>
+          </select>
+          <Link
+            to="/rooms/new"
+            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          >
+            Add Room
+          </Link>
+        </div>
       </div>
       <div className="bg-white shadow-md rounded my-6">
         <table className="min-w-full table-auto">

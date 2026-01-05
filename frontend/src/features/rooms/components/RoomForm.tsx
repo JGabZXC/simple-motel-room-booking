@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { roomService } from "../services/roomService";
+import { useRoom, useCreateRoom, useUpdateRoom } from "../hooks/useRooms";
 import type { CreateRoomDTO } from "../types";
 import { toast } from "react-toastify";
 
@@ -8,6 +8,10 @@ const RoomForm: React.FC = () => {
   const { code } = useParams<{ code: string }>();
   const navigate = useNavigate();
   const isEditMode = !!code;
+
+  const { room, loading: roomLoading } = useRoom(code || "");
+  const { createRoom, loading: creating } = useCreateRoom();
+  const { updateRoom, loading: updating } = useUpdateRoom();
 
   const [formData, setFormData] = useState<Omit<CreateRoomDTO, "id">>({
     code: "",
@@ -22,14 +26,7 @@ const RoomForm: React.FC = () => {
   const [bedCount, setBedCount] = useState(1);
 
   useEffect(() => {
-    if (isEditMode) {
-      loadRoom();
-    }
-  }, [code]);
-
-  const loadRoom = async () => {
-    try {
-      const room = await roomService.get(code!);
+    if (room) {
       setFormData({
         code: room.code,
         capacity: room.capacity,
@@ -38,11 +35,8 @@ const RoomForm: React.FC = () => {
         price_per_hour: parseFloat(room.price_per_hour),
         bed_details: room.bed_details,
       });
-    } catch (error) {
-      toast.error("Failed to load room details");
-      navigate("/rooms");
     }
-  };
+  }, [room]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -78,10 +72,10 @@ const RoomForm: React.FC = () => {
     e.preventDefault();
     try {
       if (isEditMode) {
-        await roomService.update(code!, formData);
+        await updateRoom(code!, formData);
         toast.success("Room updated successfully");
       } else {
-        await roomService.create(formData);
+        await createRoom(formData);
         toast.success("Room created successfully");
       }
       navigate("/rooms");
@@ -89,6 +83,8 @@ const RoomForm: React.FC = () => {
       toast.error(error.message || "Failed to save room");
     }
   };
+
+  if (roomLoading) return <div>Loading room details...</div>;
 
   return (
     <div className="max-w-4xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
