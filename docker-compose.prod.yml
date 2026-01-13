@@ -6,30 +6,30 @@ services:
     container_name: postgres_db
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    environment:
-      - POSTGRES_DB=motel_db
-      - POSTGRES_USER=motel_user
-      - POSTGRES_PASSWORD=motel_password
+    env_file:
+      - .env
 
   backend:
     build: ./backend
     container_name: drf_backend
     volumes:
       - ./backend/app:/app
-      - django_static_volume:/app/staticfiles # Shared volume for CSS
+      - django_static_volume:/app/staticfiles
     ports:
-      - "8000:8000" # Open for internal testing (optional)
+      - "8000:8000"
     depends_on:
       - db
     env_file:
-      - ./backend/.env
+      - .env
 
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
+      args:
+        - VITE_API_BASE_URL=${VITE_API_BASE_URL}
     container_name: react_frontend
-    restart: always
     ports:
-      - "3000:80"
+      - "5173:5173"
     depends_on:
       - backend
 
@@ -37,10 +37,10 @@ services:
     image: nginx:alpine
     container_name: nginx_proxy
     ports:
-      - "80:80" # This is the main entry point (http://localhost)
+      - "80:80"
     volumes:
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
-      - django_static_volume:/app/staticfiles # Read-only access to CSS
+      - django_static_volume:/app/staticfiles
     depends_on:
       - backend
       - frontend
