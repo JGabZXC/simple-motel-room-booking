@@ -6,8 +6,12 @@ COPY package*.json ./
 RUN npm install
 
 COPY . .
-ARG VITE_API_BASE_URL
-ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
+
+# Argument to determine which environment file to use (default: production)
+ARG BUILD_ENV=production
+# If building for development, overwrite .env with .env.development
+RUN if [ "$BUILD_ENV" = "development" ]; then cp .env.development .env; fi
+
 RUN npm run build
 
 FROM nginx:alpine
