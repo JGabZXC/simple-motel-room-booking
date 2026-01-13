@@ -4,18 +4,16 @@ services:
   db:
     image: postgres:15-alpine
     container_name: postgres_db
-    restart: always
     volumes:
       - postgres_data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_DB=myproject
-      - POSTGRES_USER=myuser
-      - POSTGRES_PASSWORD=mypassword
+      - POSTGRES_DB=motel_db
+      - POSTGRES_USER=motel_user
+      - POSTGRES_PASSWORD=motel_password
 
   backend:
     build: ./backend
     container_name: drf_backend
-    restart: always
     volumes:
       - ./backend/app:/app
       - django_static_volume:/app/staticfiles # Shared volume for CSS
@@ -23,14 +21,8 @@ services:
       - "8000:8000" # Open for internal testing (optional)
     depends_on:
       - db
-    environment:
-      - DEBUG=1
-      - DB_ENGINE=django.db.backends.postgresql
-      - DB_NAME=myproject
-      - DB_USER=myuser
-      - DB_PASSWORD=mypassword
-      - DB_HOST=db
-      - DB_PORT=5432
+    env_file:
+      - ./backend/.env
 
   frontend:
     build: ./frontend
@@ -44,7 +36,6 @@ services:
   nginx:
     image: nginx:alpine
     container_name: nginx_proxy
-    restart: always
     ports:
       - "80:80" # This is the main entry point (http://localhost)
     volumes:

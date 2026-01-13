@@ -8,28 +8,21 @@ services:
     volumes:
       - postgres_data_dev:/var/lib/postgresql/data
     environment:
-      - POSTGRES_DB=myproject
-      - POSTGRES_USER=myuser
-      - POSTGRES_PASSWORD=mypassword
+      - POSTGRES_DB=motel_db
+      - POSTGRES_USER=motel_user
+      - POSTGRES_PASSWORD=motel_password
 
   backend:
     build: ./backend
     container_name: drf_backend_dev
-    restart: always
     volumes:
       - ./backend/app:/app
     ports:
       - "8000:8000"
     depends_on:
       - db
-    environment:
-      - DEBUG=1
-      - DB_ENGINE=django.db.backends.postgresql
-      - DB_NAME=myproject
-      - DB_USER=myuser
-      - DB_PASSWORD=mypassword
-      - DB_HOST=db
-      - DB_PORT=5432
+    env_file:
+      - ./backend/.env
     command: python manage.py runserver 0.0.0.0:8000
 
   frontend:
@@ -37,7 +30,6 @@ services:
       context: ./frontend
       dockerfile: Dockerfile.dev
     container_name: react_frontend_dev
-    restart: always
     volumes:
       - ./frontend:/app
       - /app/node_modules
@@ -45,8 +37,6 @@ services:
       - "3000:5173"
     depends_on:
       - backend
-    environment:
-      - CHOKIDAR_USEPOLLING=true # Essential for hot reload on Windows/Docker
 
 volumes:
   postgres_data_dev:

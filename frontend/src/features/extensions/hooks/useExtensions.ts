@@ -22,10 +22,10 @@ export const useExtensionsForBooking = (bookingId: number) => {
         params,
         signal
       );
-      setExtensions(data.results);
-      setCount(data.count);
-      setNext(data.next);
-      setPrevious(data.previous);
+      setExtensions(data?.results || []);
+      setCount(data?.count || 0);
+      setNext(data?.next || null);
+      setPrevious(data?.previous || null);
       setLoading(false);
     } catch (err: any) {
       if (err.name !== "CanceledError") {

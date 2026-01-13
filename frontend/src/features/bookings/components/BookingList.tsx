@@ -241,7 +241,7 @@ const BookingList = () => {
         <table className="min-w-full table-auto">
           <thead>
             <tr className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
-              <th className="py-3 px-6 text-left">ID</th>
+              <th className="py-3 px-6 text-left">Id</th>
               <th className="py-3 px-6 text-left">Room</th>
               <th className="py-3 px-6 text-left">Start Time</th>
               <th className="py-3 px-6 text-left">End Time</th>

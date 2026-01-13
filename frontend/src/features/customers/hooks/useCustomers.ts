@@ -17,10 +17,10 @@ export const useCustomers = () => {
     try {
       setLoading(true);
       const response = await customerService.getAll(params, signal);
-      setCustomers(response.results);
-      setCount(response.count);
-      setNext(response.next);
-      setPrevious(response.previous);
+      setCustomers(response?.results || []);
+      setCount(response?.count || 0);
+      setNext(response?.next || null);
+      setPrevious(response?.previous || null);
       setLoading(false);
     } catch (err: any) {
       if (err.name !== "CanceledError") {

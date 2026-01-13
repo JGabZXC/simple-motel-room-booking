@@ -25,10 +25,10 @@ export const useRooms = (options?: { skipInitialFetch?: boolean }) => {
     try {
       setLoading(true);
       const response = await roomService.getAll(params, signal);
-      setRooms(response.results);
-      setCount(response.count);
-      setNext(response.next);
-      setPrevious(response.previous);
+      setRooms(response?.results || []);
+      setCount(response?.count || 0);
+      setNext(response?.next || null);
+      setPrevious(response?.previous || null);
       setLoading(false);
     } catch (err: any) {
       if (err.name !== "CanceledError") {
